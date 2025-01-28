@@ -21,6 +21,7 @@ import Dragger from "antd/es/upload/Dragger";
 import {
   CalendarOutlined,
   CloseOutlined,
+  CopyOutlined,
   DeleteOutlined,
   EditOutlined,
   EnvironmentOutlined,
@@ -182,11 +183,7 @@ function RichCardCarouselSidebar({ selectedNode }) {
           acc[`button-phoneNumber-${index}-${i}`] = button.phoneNumber;
           acc[`button-url-${index}-${i}`] = button.url;
           acc[`button-label-${index}-${i}`] = button.label;
-          acc[`button-latitude-${index}-${i}`] = button.latitude;
-          acc[`button-longitude-${index}-${i}`] = button.longitude;
-          acc[`button-startDate-${index}-${i}`] = button.startDate;
-          acc[`button-endDate-${index}-${i}`] = button.endDate;
-          acc[`button-description-${index}-${i}`] = button.description;
+          acc[`button-button-copy-code-${i}`] = button.copy;
         });
 
         return acc;
@@ -407,11 +404,7 @@ function RichCardCarouselSidebar({ selectedNode }) {
         acc[`button-phoneNumber-${cardIndex}-${i}`] = button.phoneNumber ?? "";
         acc[`button-url-${cardIndex}-${i}`] = button.url ?? "";
         acc[`button-label-${cardIndex}-${i}`] = button.label ?? "";
-        acc[`button-latitude-${cardIndex}-${i}`] = button.latitude ?? "";
-        acc[`button-longitude-${cardIndex}-${i}`] = button.longitude ?? "";
-        acc[`button-startDate-${cardIndex}-${i}`] = button.startDate ?? "";
-        acc[`button-endDate-${cardIndex}-${i}`] = button.endDate ?? "";
-        acc[`button-description-${cardIndex}-${i}`] = button.description ?? "";
+        acc[`button-button-copy-code-${i}`] = button.copy;
         return acc;
       }, {});
       form.resetFields();
@@ -454,11 +447,7 @@ function RichCardCarouselSidebar({ selectedNode }) {
         acc[`button-phoneNumber-${cardIndex}-${i}`] = button.phoneNumber;
         acc[`button-url-${cardIndex}-${i}`] = button.url;
         acc[`button-label-${cardIndex}-${i}`] = button.label;
-        acc[`button-latitude-${cardIndex}-${i}`] = button.latitude;
-        acc[`button-longitude-${cardIndex}-${i}`] = button.longitude;
-        acc[`button-startDate-${cardIndex}-${i}`] = button.startDate;
-        acc[`button-endDate-${cardIndex}-${i}`] = button.endDate;
-        acc[`button-description-${cardIndex}-${i}`] = button.description;
+        acc[`button-button-copy-code-${i}`] = button.copy;
         return acc;
       }, {});
       form.resetFields();
@@ -540,9 +529,7 @@ function RichCardCarouselSidebar({ selectedNode }) {
           },
         }}
       >
-        <Form layout="vertical"
-         form={form}
-         >
+        <Form layout="vertical" form={form}>
           <Row align="middle" justify="center" gutter={[0, 16]}>
             <Col md={9}>
               <Form.Item>
@@ -676,7 +663,7 @@ function RichCardCarouselSidebar({ selectedNode }) {
               >
                 {alldata?.data?.richCardCarousels?.cards[cardIndex]?.media ? (
                   <>
-                   {/* <div
+                    {/* <div
                     style={{ position: "relative" }}
                    > */}
                     <img
@@ -702,9 +689,8 @@ function RichCardCarouselSidebar({ selectedNode }) {
                       }}
                       onClick={() => handleDeleteImage(cardIndex)} // Pass the cardIndex to the delete handler
                     /> */}
-                  {/* </div> */}
+                    {/* </div> */}
                   </>
-
                 ) : (
                   uploadButton
                 )}
@@ -772,7 +758,7 @@ function RichCardCarouselSidebar({ selectedNode }) {
             <Card
               style={{ marginTop: 4 }}
               title=""
-              styles={{body:{padding: "5px"}}}
+              styles={{ body: { padding: "5px" } }}
               key={btn.id}
             >
               {editingCardId === btn.id && (
@@ -792,8 +778,7 @@ function RichCardCarouselSidebar({ selectedNode }) {
                           {btn?.type === "quick" && <MessageOutlined />}
                           {btn?.type === "call" && <PhoneOutlined />}
                           {btn?.type === "url" && <LinkOutlined />}
-                          {btn?.type === "location" && <EnvironmentOutlined />}
-                          {btn?.type === "calendar" && <CalendarOutlined />}
+                          {btn?.type === "copy-code" && <CopyOutlined />}
                         </>
                       }
                     >
@@ -838,10 +823,7 @@ function RichCardCarouselSidebar({ selectedNode }) {
                             {btn?.type === "quick" && <MessageOutlined />}
                             {btn?.type === "call" && <PhoneOutlined />}
                             {btn?.type === "url" && <LinkOutlined />}
-                            {btn?.type === "location" && (
-                              <EnvironmentOutlined />
-                            )}
-                            {btn?.type === "calendar" && <CalendarOutlined />}
+                            {btn?.type === "copy-code" && <CopyOutlined />}
                           </>
                         }
                       >
@@ -874,8 +856,7 @@ function RichCardCarouselSidebar({ selectedNode }) {
                             { value: "quick", label: "Quick Reply" },
                             { value: "call", label: "Call Button" },
                             { value: "url", label: "URL Button" },
-                            { value: "location", label: "Location" },
-                            { value: "calendar", label: "Calendar" },
+                            { value: "copy-code", label: "Copy Code" },
                           ]}
                         />
                       </Form.Item>
@@ -987,178 +968,24 @@ function RichCardCarouselSidebar({ selectedNode }) {
                         </Form.Item>
                       </Col>
                     )}
-                    {btn.type === "location" && (
-                      <>
-                        <Col md={12}>
-                          <Form.Item
-                            name={`button-longitude-${cardIndex}-${index}`}
-                            label="Longitude"
-                            initialValue={btn.longitude}
-                            rules={[
-                              {
-                                required: true,
-                                message: "Longitude is required",
-                              },
-                              {
-                                type: "number",
-                                min: -180,
-                                max: 180,
-                                message: "Longitude between -180 to 180",
-                              },
-                            ]}
-                          >
-                            <InputNumber
-                              size="small"
-                              style={{ width: "100%" }}
-                              value={btn.longitude}
-                              onChange={(value) =>
-                                handleChange(index, "longitude", value)
-                              }
-                              placeholder="Enter Longitude"
-                            />
-                          </Form.Item>
-                        </Col>
-                        <Col md={12}>
-                          <Form.Item
-                            name={`button-latitude-${cardIndex}-${index}`}
-                            label="Latitude"
-                            initialValue={btn.latitude}
-                            rules={[
-                              {
-                                required: true,
-                                message: "Latitude is required",
-                              },
-                              {
-                                type: "number",
-                                min: -90,
-                                max: 90,
-                                message: "Latitude must be between -90 and 90",
-                              },
-                            ]}
-                          >
-                            <InputNumber
-                              size="small"
-                              style={{ width: "100%" }}
-                              value={btn.latitude}
-                              onChange={(value) =>
-                                handleChange(index, "latitude", value)
-                              }
-                              placeholder="Enter Latitude"
-                            />
-                          </Form.Item>
-                        </Col>
-                        <Col md={24}>
-                          <Form.Item
-                            name={`button-label-${cardIndex}-${index}`}
-                            label="Label"
-                            initialValue={btn.label}
-                            rules={[
-                              {
-                                required: true,
-                                type: "string",
-                                message: "Please enter label",
-                              },
-                            ]}
-                          >
-                            <Input
-                              size="small"
-                              value={btn.label}
-                              onChange={(e) =>
-                                handleChange(index, "label", e.target.value)
-                              }
-                              placeholder="Enter Label"
-                            />
-                          </Form.Item>
-                        </Col>
-                      </>
-                    )}
-                    {btn.type === "calendar" && (
-                      <>
-                        <Col md={12}>
-                          <Form.Item
-                            name={`button-startDate-${cardIndex}-${index}`}
-                            label="Start Date"
-                            initialValue={btn.startDate}
-                            rules={[
-                              {
-                                required: true,
-                                message: "Start Date is required",
-                              },
-                            ]}
-                          >
-                            <DatePicker
-                              size="small"
-                              style={{ width: "100%" }}
-                              value={btn.startDate}
-                              onChange={(date) =>
-                                handleChange(index, "startDate", date)
-                              }
-                            />
-                          </Form.Item>
-                        </Col>
-                        <Col md={12}>
-                          <Form.Item
-                            name={`button-endDate-${cardIndex}-${index}`}
-                            label="End Date"
-                            initialValue={btn.endDate}
-                            rules={[
-                              {
-                                required: true,
-                                message: "End Date is required",
-                              },
-                              ({ getFieldValue }) => ({
-                                validator(_, value) {
-                                  if (
-                                    !value ||
-                                    value.isAfter(
-                                      getFieldValue(`button-startDate-${index}`)
-                                    )
-                                  ) {
-                                    return Promise.resolve();
-                                  }
-                                  return Promise.reject(
-                                    new Error(
-                                      "End Date must be after Start Date"
-                                    )
-                                  );
-                                },
-                              }),
-                            ]}
-                          >
-                            <DatePicker
-                              size="small"
-                              style={{ width: "100%" }}
-                              value={btn.endDate}
-                              onChange={(date) =>
-                                handleChange(index, "endDate", date)
-                              }
-                            />
-                          </Form.Item>
-                        </Col>
-                        <Col md={24}>
-                          <Form.Item
-                            name={`button-calender-${cardIndex}-${index}`}
-                            label="Label"
-                            rules={[
-                              {
-                                required: true,
-                                type: "string",
-                                message: "Please enter label",
-                              },
-                            ]}
-                            initialValue={btn.calender}
-                          >
-                            <Input
-                              size="small"
-                              value={btn.calender}
-                              onChange={(e) =>
-                                handleChange(index, "calender", e.target.value)
-                              }
-                              placeholder="Enter Label"
-                            />
-                          </Form.Item>
-                        </Col>
-                      </>
+                    {btn.type === "copy-code" && (
+                      <Col md={24}>
+                        <Form.Item
+                          name={`button-copy-code-${index}`}
+                          // label="URL"
+                          initialValue={btn.payload}
+                          rules={[
+                            {
+                              required: true,
+                              message: "Copy Code is required",
+                            },
+                            {
+                              type: "copy-code",
+                              message: "Enter a valid Copy Code",
+                            },
+                          ]}
+                        ></Form.Item>
+                      </Col>
                     )}
                   </Row>
                 </Form>

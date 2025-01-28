@@ -512,14 +512,9 @@ const ButtonNode = ({ data, selected }) => {
                         <LinkOutlined /> {btn?.title}
                       </Typography.Text>
                     )}
-                    {btn.type === "location" && (
+                    {btn.type === "copy-code" && (
                       <Typography.Text>
-                        <EnvironmentOutlined /> {btn?.title}
-                      </Typography.Text>
-                    )}
-                    {btn.type === "calendar" && (
-                      <Typography.Text>
-                        <CalendarOutlined /> {btn?.title}
+                        <CopyOutlined /> {btn?.title}
                       </Typography.Text>
                     )}
                   </Button>

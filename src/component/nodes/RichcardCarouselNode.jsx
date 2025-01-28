@@ -349,21 +349,22 @@ function RichcardCarouselNode({ data, selected }) {
         onMouseLeave={() => setIsHovered(false)}
       >
         <Card
-          styles={{body:{
-            padding: "0px",
-            borderRadius: "14px",
-            background: "transparent",
-            boxShadow: "0px -10px 15px rgba(0, 0, 0, 0.2)",
-          },
-          header:{
-            color: "#fff",
-            textAlign: "center",
-            borderRadius: "14px 14px 0 0",
-            padding: "10px",
-            marginBottom: "-14px",
-            border: "none",
-          }
-        }}
+          styles={{
+            body: {
+              padding: "0px",
+              borderRadius: "14px",
+              background: "transparent",
+              boxShadow: "0px -10px 15px rgba(0, 0, 0, 0.2)",
+            },
+            header: {
+              color: "#fff",
+              textAlign: "center",
+              borderRadius: "14px 14px 0 0",
+              padding: "10px",
+              marginBottom: "-14px",
+              border: "none",
+            },
+          }}
           style={{
             paddingTop: "2px",
             borderRadius: "14px",
@@ -631,14 +632,9 @@ function RichcardCarouselNode({ data, selected }) {
                                   <LinkOutlined /> {action?.title}
                                 </Typography.Text>
                               )}
-                              {action.type === "location" && (
+                              {action.type === "copy-code" && (
                                 <Typography.Text>
-                                  <EnvironmentOutlined /> {action?.title}
-                                </Typography.Text>
-                              )}
-                              {action.type === "calendar" && (
-                                <Typography.Text>
-                                  <CalendarOutlined /> {action?.title}
+                                  <CopyOutlined /> {action?.title}
                                 </Typography.Text>
                               )}
                             </Button>

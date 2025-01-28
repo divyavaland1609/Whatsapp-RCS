@@ -19,6 +19,7 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import {
   CalendarOutlined,
+  CopyOutlined,
   DeleteOutlined,
   EditOutlined,
   EnvironmentOutlined,
@@ -125,11 +126,8 @@ function RichcardNodeSidebar({ selectedNode }) {
         acc[`button-phoneNumber-${i}`] = button.phoneNumber;
         acc[`button-url-${i}`] = button.url;
         acc[`button-label-${i}`] = button.label;
-        acc[`button-latitude-${i}`] = button.latitude;
-        acc[`button-longitude-${i}`] = button.longitude;
-        acc[`button-startDate-${i}`] = button.startDate;
-        acc[`button-endDate-${i}`] = button.endDate;
-        acc[`button-description-${i}`] = button.description;
+        acc[`button-button-copy-code-${i}`] = button.copy;
+
         return acc;
       }, {});
       form.resetFields();
@@ -178,11 +176,8 @@ function RichcardNodeSidebar({ selectedNode }) {
           acc[`button-phoneNumber-${i}`] = button.phoneNumber;
           acc[`button-url-${i}`] = button.url;
           acc[`button-label-${i}`] = button.label;
-          acc[`button-latitude-${i}`] = button.latitude;
-          acc[`button-longitude-${i}`] = button.longitude;
-          acc[`button-startDate-${i}`] = button.startDate;
-          acc[`button-endDate-${i}`] = button.endDate;
-          acc[`button-description-${i}`] = button.description;
+          acc[`button-button-copy-code-${i}`] = button.copy;
+
           return acc;
         }, {});
         form.resetFields();
@@ -210,11 +205,8 @@ function RichcardNodeSidebar({ selectedNode }) {
           acc[`button-phoneNumber-${i}`] = button.phoneNumber;
           acc[`button-url-${i}`] = button.url;
           acc[`button-label-${i}`] = button.label;
-          acc[`button-latitude-${i}`] = button.latitude;
-          acc[`button-longitude-${i}`] = button.longitude;
-          acc[`button-startDate-${i}`] = button.startDate;
-          acc[`button-endDate-${i}`] = button.endDate;
-          acc[`button-description-${i}`] = button.description;
+          acc[`button-button-copy-code-${i}`] = button.copy;
+
           return acc;
         }, {});
         form.resetFields();
@@ -449,7 +441,7 @@ function RichcardNodeSidebar({ selectedNode }) {
               <Card
                 style={{ marginTop: 4 }}
                 title=""
-                styles={{body:{padding: "5px"}}}
+                styles={{ body: { padding: "5px" } }}
                 key={action.id}
               >
                 {editingCardId === action.id && (
@@ -474,12 +466,7 @@ function RichcardNodeSidebar({ selectedNode }) {
                             {action?.type === "quick" && <MessageOutlined />}
                             {action?.type === "call" && <PhoneOutlined />}
                             {action?.type === "url" && <LinkOutlined />}
-                            {action?.type === "location" && (
-                              <EnvironmentOutlined />
-                            )}
-                            {action?.type === "calendar" && (
-                              <CalendarOutlined />
-                            )}
+                            {action?.type === "copy-code" && <CopyOutlined />}
                           </>
                         }
                       >
@@ -522,12 +509,7 @@ function RichcardNodeSidebar({ selectedNode }) {
                               {action?.type === "quick" && <MessageOutlined />}
                               {action?.type === "call" && <PhoneOutlined />}
                               {action?.type === "url" && <LinkOutlined />}
-                              {action?.type === "location" && (
-                                <EnvironmentOutlined />
-                              )}
-                              {action?.type === "calendar" && (
-                                <CalendarOutlined />
-                              )}
+                              {action?.type === "copy-code" && <CopyOutlined />}
                             </>
                           }
                         >
@@ -559,8 +541,7 @@ function RichcardNodeSidebar({ selectedNode }) {
                               { value: "quick", label: "Quick Reply" },
                               { value: "call", label: "Call Button" },
                               { value: "url", label: "URL Button" },
-                              { value: "location", label: "Location" },
-                              { value: "calendar", label: "Calendar" },
+                              { value: "copy-code", label: "Copy Code" },
                             ]}
                           />
                         </Form.Item>
@@ -687,187 +668,24 @@ function RichcardNodeSidebar({ selectedNode }) {
                           </Form.Item>
                         </Col>
                       )}
-                      {action.type === "location" && (
-                        <>
-                          <Col md={12}>
-                            <Form.Item
-                              name={`button-longitude-${index}`}
-                              label="Longitude"
-                              initialValue={action.longitude}
-                              rules={[
-                                {
-                                  required: true,
-                                  message: "Longitude is required",
-                                },
-                                {
-                                  type: "number",
-                                  min: -180,
-                                  max: 180,
-                                  message: "Longitude between -180 to 180",
-                                },
-                              ]}
-                            >
-                              <InputNumber
-                                size="small"
-                                style={{ width: "100%" }}
-                                value={action.longitude}
-                                onChange={(value) =>
-                                  handleChange(index, "longitude", value)
-                                }
-                                placeholder="Enter Longitude"
-                              />
-                            </Form.Item>
-                          </Col>
-                          <Col md={12}>
-                            <Form.Item
-                              name={`button-latitude-${index}`}
-                              label="Latitude"
-                              initialValue={action.latitude}
-                              rules={[
-                                {
-                                  required: true,
-                                  message: "Latitude is required",
-                                },
-                                {
-                                  type: "number",
-                                  min: -90,
-                                  max: 90,
-                                  message:
-                                    "Latitude must be between -90 and 90",
-                                },
-                              ]}
-                            >
-                              <InputNumber
-                                size="small"
-                                style={{ width: "100%" }}
-                                value={action.latitude}
-                                onChange={(value) =>
-                                  handleChange(index, "latitude", value)
-                                }
-                                placeholder="Enter Latitude"
-                              />
-                            </Form.Item>
-                          </Col>
-
-                          <Col md={24}>
-                            <Form.Item
-                              name={`button-label-${index}`}
-                              label="Label"
-                              initialValue={action.label}
-                              rules={[
-                                {
-                                  required: true,
-                                  type: "string",
-                                  message: "Please enter label",
-                                },
-                              ]}
-                            >
-                              <Input
-                                size="small"
-                                value={action.label}
-                                onChange={(e) =>
-                                  handleChange(index, "label", e.target.value)
-                                }
-                                placeholder="Enter Label"
-                              />
-                            </Form.Item>
-                          </Col>
-                        </>
-                      )}
-                      {action.type === "calendar" && (
-                        <>
-                          <Col md={12}>
-                            <Form.Item
-                              name={`button-startDate-${index}`}
-                              label="Start Date"
-                              initialValue={action.startDate}
-                              rules={[
-                                {
-                                  required: true,
-                                  message: "Start Date is required",
-                                },
-                              ]}
-                            >
-                              <DatePicker
-                                size="small"
-                                style={{ width: "100%" }}
-                                value={action.startDate}
-                                onChange={(date) =>
-                                  handleChange(index, "startDate", date)
-                                }
-                                placeholder="Select Start Date"
-                              />
-                            </Form.Item>
-                          </Col>
-                          <Col md={12}>
-                            <Form.Item
-                              name={`button-endDate-${index}`}
-                              label="End Date"
-                              initialValue={action.endDate}
-                              rules={[
-                                {
-                                  required: true,
-                                  message: "End Date is required",
-                                },
-                                ({ getFieldValue }) => ({
-                                  validator(_, value) {
-                                    if (
-                                      !value ||
-                                      value.isAfter(
-                                        getFieldValue(
-                                          `button-startDate-${index}`
-                                        )
-                                      )
-                                    ) {
-                                      return Promise.resolve();
-                                    }
-                                    return Promise.reject(
-                                      new Error(
-                                        "End Date must be after Start Date"
-                                      )
-                                    );
-                                  },
-                                }),
-                              ]}
-                            >
-                              <DatePicker
-                                size="small"
-                                style={{ width: "100%" }}
-                                value={action.endDate}
-                                onChange={(date) =>
-                                  handleChange(index, "endDate", date)
-                                }
-                                placeholder="Select End Date"
-                              />
-                            </Form.Item>
-                          </Col>
-                          <Col md={24}>
-                            <Form.Item
-                              name={`button-calender-${index}`}
-                              label="Label"
-                              rules={[
-                                {
-                                  required: true,
-                                  message: "Please enter label",
-                                },
-                              ]}
-                              initialValue={action.calender}
-                            >
-                              <Input
-                                size="small"
-                                value={action.calender}
-                                onChange={(e) =>
-                                  handleChange(
-                                    index,
-                                    "calender",
-                                    e.target.value
-                                  )
-                                }
-                                placeholder="Enter Label"
-                              />
-                            </Form.Item>
-                          </Col>
-                        </>
+                      {action.type === "copy-code" && (
+                        <Col md={24}>
+                          <Form.Item
+                            name={`button-copy-code-${index}`}
+                            // label="URL"
+                            initialValue={action.payload}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Copy Code is required",
+                              },
+                              {
+                                type: "copy-code",
+                                message: "Enter a valid Copy Code",
+                              },
+                            ]}
+                          ></Form.Item>
+                        </Col>
                       )}
                     </Row>
                   </Form>

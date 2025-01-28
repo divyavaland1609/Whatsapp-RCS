@@ -626,14 +626,9 @@ function RichcardNode({ data, selected }) {
                         <LinkOutlined /> {btn?.title}
                       </Typography.Text>
                     )}
-                    {btn.type === "location" && (
+                    {btn.type === "copy-code" && (
                       <Typography.Text>
-                        <EnvironmentOutlined /> {btn?.title}
-                      </Typography.Text>
-                    )}
-                    {btn.type === "calendar" && (
-                      <Typography.Text>
-                        <CalendarOutlined /> {btn?.title}
+                        <CopyOutlined /> {btn?.title}
                       </Typography.Text>
                     )}
                   </Button>
@@ -646,7 +641,6 @@ function RichcardNode({ data, selected }) {
               <Button className="btn" size="small" type="text" block>
                 <Handle
                   id={`handle-0`}
-
                   // id={`handle`}
                   type={"source"}
                   position={Position.Right}
