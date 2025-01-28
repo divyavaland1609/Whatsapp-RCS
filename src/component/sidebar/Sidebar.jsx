@@ -5,6 +5,7 @@ import {
   FileImageOutlined,
   FileTextOutlined,
   PlusOutlined,
+  UnorderedListOutlined,
 } from "@ant-design/icons";
 import { useDnD } from "./DnDContext";
 
@@ -51,6 +52,13 @@ function Sidebar({ collapsed }) {
     },
     {
       id: 5,
+      name: "List Message",
+      type: "list",
+      bgColor: "#F2AF41",
+      icons: <UnorderedListOutlined  style={{ fontSize: "20px" }} />,
+    },
+    {
+      id: 6,
       name: "Media",
       type: "media",
       bgColor: "#38C792",

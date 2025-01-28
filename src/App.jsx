@@ -48,6 +48,8 @@ import {
 import ChatFlow from "./component/ChatFlow";
 import { PageContainer, ProLayout } from "@ant-design/pro-components";
 import CustomEdge from "./component/CustomEdge";
+import ListNode from "./component/nodes/ListNode";
+import ListNodeSidebar from "./component/sidebar/ListNodeSidebar";
 
 const defaultNodePosition = {
   x: 250,
@@ -383,6 +385,14 @@ const DnDFlow = () => {
             />
           </div>
         );
+        case "list":
+          return (
+            <ListNodeSidebar
+              title={"List"}
+              selectedNode={selectedNode}
+              setSelectedNode={setSelectedNode}
+            />
+          );
       case "media":
         return (
           <div className="sidebar">
@@ -585,6 +595,7 @@ const DnDFlow = () => {
                     button: ButtonNode,
                     richcard: RichcardNode,
                     richcard_carosal: RichcardCarouselNode,
+                    list: ListNode,
                     media: MediaNode,
                   }}
                   fitView 
