@@ -153,8 +153,21 @@ function RichcardNodeSidebar({ selectedNode }) {
     });
   };
 
+  const quickReplyCount = data.actions.filter(
+    (btn) => btn.type === "quick"
+  ).length;
+  const quickReplyCount1 = data.actions.filter(
+    (btn) => btn.type === "call"
+  ).length;
+  const quickReplyCount2 = data.actions.filter(
+    (btn) => btn.type === "url"
+  ).length;
+  const quickReplyCount3 = data.actions.filter(
+    (btn) => btn.type === "copy-code"
+  ).length;
+
   const addNewCard = () => {
-    if (data.actions.length < 4) {
+    if (data.actions.length < 3) {
       setData((prev) => {
         const value = {
           ...prev,
@@ -187,7 +200,7 @@ function RichcardNodeSidebar({ selectedNode }) {
         return value;
       });
     } else {
-      message.warning("Cannot add more than 4 buttons");
+      message.warning("Cannot add more than 3 buttons");
     }
   };
   const deleteCard = (index) => {
@@ -538,10 +551,26 @@ function RichcardNodeSidebar({ selectedNode }) {
                             }
                             style={{ width: "100%", textAlign: "left" }}
                             options={[
-                              { value: "quick", label: "Quick Reply" },
-                              { value: "call", label: "Call Button" },
-                              { value: "url", label: "URL Button" },
-                              { value: "copy-code", label: "Copy Code" },
+                              {
+                                value: "quick",
+                                label: "Quick Reply",
+                                disabled: quickReplyCount >= 3,
+                              },
+                              {
+                                value: "call",
+                                label: "Call Button",
+                                disabled: quickReplyCount1 >= 1,
+                              },
+                              {
+                                value: "url",
+                                label: "URL Button",
+                                disabled: quickReplyCount2 >= 1,
+                              },
+                              {
+                                value: "copy-code",
+                                label: "Copy Code",
+                                disabled: quickReplyCount3 >= 1,
+                              },
                             ]}
                           />
                         </Form.Item>

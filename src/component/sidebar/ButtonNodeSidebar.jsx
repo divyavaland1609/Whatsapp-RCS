@@ -171,50 +171,105 @@ const ButtonNodeSidebar = ({ selectedNode }) => {
   //   }
   // };
 
+  const updateFormFields = (actions) => {
+    const initValues = actions.reduce((acc, button, i) => {
+      acc[`button-type-${i}`] = button.type;
+      acc[`button-title-${i}`] = button.title;
+      acc[`button-payload-${i}`] = button.payload;
+      acc[`button-phoneNumber-${i}`] = button.phoneNumber;
+      acc[`button-url-${i}`] = button.url;
+      acc[`button-label-${i}`] = button.label;
+      acc[`button-button-copy-code-${i}`] = button.copy;
+      return acc;
+    }, {});
+    form.resetFields();
+    form.setFieldsValue(initValues);
+  };
+
+
   const addNewCard = () => {
-    if (data.actions.length < 11) {
+    if (data.actions.length < 3) {
       setData((prev) => {
-        const value = {
-          ...prev,
-          actions: [
-            ...prev.actions,
-            {
-              id: prev.actions.length,
-              type: "quick",
-              title: "",
-              payload: "",
-            },
-          ],
-        };
-        const initValues = alldata?.data?.actions?.reduce((acc, button, i) => {
-          console.log("button", button);
-          acc[`button-type-${i}`] = button.type;
-          acc[`button-title-${i}`] = button.title;
-          acc[`button-payload-${i}`] = button.payload;
-          acc[`button-phoneNumber-${i}`] = button.phoneNumber;
-          acc[`button-url-${i}`] = button.url;
-          acc[`button-label-${i}`] = button.label;
-
-          acc[`button-button-copy-code-${i}`] = button.copy;
-
-          // acc[`button-label-${i}`] = button.label;
-          // acc[`button-latitude-${i}`] = button.latitude;
-          // acc[`button-longitude-${i}`] = button.longitude;
-          // acc[`button-startDate-${i}`] = button.startDate;
-          // acc[`button-endDate-${i}`] = button.endDate;
-          // acc[`button-description-${i}`] = button.description;
-          return acc;
-        }, {});
-        form.resetFields();
-        form.setFieldsValue(initValues);
-        const data = { selectedNode, value: value.actions, key: "actions" };
-        dispatch(setUpdateNodeData(data));
-        return value;
+        const newActions = [
+          ...prev.actions,
+          {
+            id: prev.actions.length,
+            type: "quick",
+            title: "",
+            payload: "",
+          },
+        ];
+        updateFormFields(newActions);
+        dispatch(setUpdateNodeData({ selectedNode, value: newActions, key: "actions" }));
+        return { ...prev, actions: newActions };
       });
     } else {
-      message.warning("Cannot add more than 11 buttons");
+      message.warning("Cannot add more than 3 buttons");
     }
   };
+
+  const deleteCard = (index) => {
+    if (data.actions.length > 1) {
+      setData((prev) => {
+        const newActions = prev.actions.filter((_, i) => i !== index);
+        updateFormFields(newActions);
+        dispatch(setUpdateNodeData({ selectedNode, value: newActions, key: "actions" }));
+        return { ...prev, actions: newActions };
+      });
+    } else {
+      message.warning("Buttons must be greater than 1");
+    }
+  };
+  
+const quickReplyCount = data.actions.filter(btn => btn.type === "quick").length;
+const quickReplyCount1 = data.actions.filter(btn => btn.type === "call").length;
+const quickReplyCount2 = data.actions.filter(btn => btn.type === "url").length;
+const quickReplyCount3 = data.actions.filter(btn => btn.type === "copy-code").length;
+
+  // const addNewCard = () => {
+  //   if (data.actions.length < 11) {
+  //     setData((prev) => {
+  //       const value = {
+  //         ...prev,
+  //         actions: [
+  //           ...prev.actions,
+  //           {
+  //             id: prev.actions.length,
+  //             type: "quick",
+  //             title: "",
+  //             payload: "",
+  //           },
+  //         ],
+  //       };
+  //       const initValues = alldata?.data?.actions?.reduce((acc, button, i) => {
+  //         console.log("button", button);
+  //         acc[`button-type-${i}`] = button.type;
+  //         acc[`button-title-${i}`] = button.title;
+  //         acc[`button-payload-${i}`] = button.payload;
+  //         acc[`button-phoneNumber-${i}`] = button.phoneNumber;
+  //         acc[`button-url-${i}`] = button.url;
+  //         acc[`button-label-${i}`] = button.label;
+
+  //         acc[`button-button-copy-code-${i}`] = button.copy;
+
+  //         // acc[`button-label-${i}`] = button.label;
+  //         // acc[`button-latitude-${i}`] = button.latitude;
+  //         // acc[`button-longitude-${i}`] = button.longitude;
+  //         // acc[`button-startDate-${i}`] = button.startDate;
+  //         // acc[`button-endDate-${i}`] = button.endDate;
+  //         // acc[`button-description-${i}`] = button.description;
+  //         return acc;
+  //       }, {});
+  //       form.resetFields();
+  //       form.setFieldsValue(initValues);
+  //       const data = { selectedNode, value: value.actions, key: "actions" };
+  //       dispatch(setUpdateNodeData(data));
+  //       return value;
+  //     });
+  //   } else {
+  //     message.warning("Cannot add more than 11 buttons");
+  //   }
+  // };
 
   // const deleteCard = (index) => {
   //   if (data.actions.length > 1) {
@@ -231,40 +286,40 @@ const ButtonNodeSidebar = ({ selectedNode }) => {
   //   }
   // };
 
-  const deleteCard = (index) => {
-    if (data.actions.length > 1) {
-      setData((prev) => {
-        const value = [...prev.actions]
-          .filter((_, i) => i !== index)
-          .map((item, i) => ({ ...item, id: i }));
+  // const deleteCard = (index) => {
+  //   if (data.actions.length > 1) {
+  //     setData((prev) => {
+  //       const value = [...prev.actions]
+  //         .filter((_, i) => i !== index)
+  //         .map((item, i) => ({ ...item, id: i }));
 
-        const initValues = alldata?.data?.actions?.reduce((acc, button, i) => {
-          console.log("button", button);
-          acc[`button-type-${i}`] = button.type;
-          acc[`button-title-${i}`] = button.title;
-          acc[`button-payload-${i}`] = button.payload;
-          acc[`button-phoneNumber-${i}`] = button.phoneNumber;
-          acc[`button-url-${i}`] = button.url;
-          acc[`button-label-${i}`] = button.label;
+  //       const initValues = alldata?.data?.actions?.reduce((acc, button, i) => {
+  //         console.log("button", button);
+  //         acc[`button-type-${i}`] = button.type;
+  //         acc[`button-title-${i}`] = button.title;
+  //         acc[`button-payload-${i}`] = button.payload;
+  //         acc[`button-phoneNumber-${i}`] = button.phoneNumber;
+  //         acc[`button-url-${i}`] = button.url;
+  //         acc[`button-label-${i}`] = button.label;
 
-          acc[`button-button-copy-code-${i}`] = button.copy;
-          // acc[`button-latitude-${i}`] = button.latitude;
-          // acc[`button-longitude-${i}`] = button.longitude;
-          // acc[`button-startDate-${i}`] = button.startDate;
-          // acc[`button-endDate-${i}`] = button.endDate;
-          // acc[`button-description-${i}`] = button.description;
-          return acc;
-        }, {});
-        form.resetFields();
-        form.setFieldsValue(initValues);
-        const data = { selectedNode, value, key: "actions" };
-        dispatch(setUpdateNodeData(data));
-        return { ...prev, actions: value };
-      });
-    } else {
-      message.warning("Buttons must be greater than 1");
-    }
-  };
+  //         acc[`button-button-copy-code-${i}`] = button.copy;
+  //         // acc[`button-latitude-${i}`] = button.latitude;
+  //         // acc[`button-longitude-${i}`] = button.longitude;
+  //         // acc[`button-startDate-${i}`] = button.startDate;
+  //         // acc[`button-endDate-${i}`] = button.endDate;
+  //         // acc[`button-description-${i}`] = button.description;
+  //         return acc;
+  //       }, {});
+  //       form.resetFields();
+  //       form.setFieldsValue(initValues);
+  //       const data = { selectedNode, value, key: "actions" };
+  //       dispatch(setUpdateNodeData(data));
+  //       return { ...prev, actions: value };
+  //     });
+  //   } else {
+  //     message.warning("Buttons must be greater than 1");
+  //   }
+  // };
 
   const handleEditToggle = (id) => {
     setEditingCardId(editingCardId === id ? null : id);
@@ -429,10 +484,10 @@ const ButtonNodeSidebar = ({ selectedNode }) => {
                           }
                           style={{ width: "100%", textAlign: "left" }}
                           options={[
-                            { value: "quick", label: "Quick Reply" },
-                            { value: "call", label: "Call Button" },
-                            { value: "url", label: "URL Button" },
-                            { value: "copy-code", label: "Copy Code" },
+                            { value: "quick", label: "Quick Reply", disabled: quickReplyCount >= 3 },
+                            { value: "call", label: "Call Button", disabled: quickReplyCount1 >= 1 },
+                            { value: "url", label: "URL Button", disabled: quickReplyCount2 >= 1 },
+                            { value: "copy-code", label: "Copy Code", disabled: quickReplyCount3 >= 1 },
                           ]}
                         />
                       </Form.Item>

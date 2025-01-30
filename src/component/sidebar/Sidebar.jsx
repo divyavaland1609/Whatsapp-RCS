@@ -52,7 +52,7 @@ function Sidebar({ collapsed }) {
     },
     {
       id: 5,
-      name: "List Message",
+      name: "List/Menu",
       type: "list",
       bgColor: "#F2AF41",
       icons: <UnorderedListOutlined  style={{ fontSize: "20px" }} />,

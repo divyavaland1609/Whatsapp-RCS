@@ -376,7 +376,7 @@ function RichCardCarouselSidebar({ selectedNode }) {
     setRichCardCarousels((prev) => {
       const updatedCards = prev.cards.map((card, index) => {
         if (index === cardIndex) {
-          if (card.actions.length < 4) {
+          if (card.actions.length < 3) {
             const updatedActions = [
               ...card.actions,
               {
@@ -388,7 +388,7 @@ function RichCardCarouselSidebar({ selectedNode }) {
             ];
             return { ...card, actions: updatedActions };
           } else {
-            message.warning("Cannot add more than 4 buttons to a card");
+            message.warning("Cannot add more than 3 buttons to a card");
             return card;
           }
         }
@@ -420,6 +420,19 @@ function RichCardCarouselSidebar({ selectedNode }) {
       return { ...prev, cards: updatedCards };
     });
   };
+
+  const quickReplyCount = alldata?.data?.richCardCarousels?.cards[cardIndex]?.actions.filter(
+    (btn) => btn.type === "quick"
+  ).length;
+  const quickReplyCount1 = alldata?.data?.richCardCarousels?.cards[cardIndex]?.filter(
+    (btn) => btn.type === "call"
+  ).length;
+  const quickReplyCount2 = alldata?.data?.richCardCarousels?.cards[cardIndex]?.filter(
+    (btn) => btn.type === "url"
+  ).length;
+  const quickReplyCount3 = alldata?.data?.richCardCarousels?.cards[cardIndex]?.filter(
+    (btn) => btn.type === "copy-code"
+  ).length;
 
   const deleteCard = (index) => {
     if (richCardCarousels?.cards[cardIndex]?.actions?.length > 1) {
@@ -853,10 +866,26 @@ function RichCardCarouselSidebar({ selectedNode }) {
                           }
                           style={{ width: "100%", textAlign: "left" }}
                           options={[
-                            { value: "quick", label: "Quick Reply" },
-                            { value: "call", label: "Call Button" },
-                            { value: "url", label: "URL Button" },
-                            { value: "copy-code", label: "Copy Code" },
+                            {
+                              value: "quick",
+                              label: "Quick Reply",
+                              disabled: quickReplyCount >= 3,
+                            },
+                            {
+                              value: "call",
+                              label: "Call Button",
+                              disabled: quickReplyCount1 >= 1,
+                            },
+                            {
+                              value: "url",
+                              label: "URL Button",
+                              disabled: quickReplyCount2 >= 1,
+                            },
+                            {
+                              value: "copy-code",
+                              label: "Copy Code",
+                              disabled: quickReplyCount3 >= 1,
+                            },
                           ]}
                         />
                       </Form.Item>
