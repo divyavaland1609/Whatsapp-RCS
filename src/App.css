@@ -376,6 +376,10 @@ input:focus {
 .shadow-orange::before {
   box-shadow: 0 -25px 0 0 #ff6f40;
 }
+.shadow-brown::before {
+  box-shadow: 0 -25px 0 0 #bfab7c;
+}
+
 
 .card-body::before {
   background-color: transparent !important;
@@ -423,7 +427,7 @@ input:focus {
 }
 .flex-grow {
   display: flex;
-  padding: 7px;
+  padding: 6px;
 }
 
 :where(.css-dev-only-do-not-override-tpassh).ant-layout,

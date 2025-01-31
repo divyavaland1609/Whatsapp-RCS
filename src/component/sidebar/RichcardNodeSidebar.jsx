@@ -697,7 +697,7 @@ function RichcardNodeSidebar({ selectedNode }) {
                           </Form.Item>
                         </Col>
                       )}
-                      {action.type === "copy-code" && (
+                      {/* {action.type === "copy-code" && (
                         <Col md={24}>
                           <Form.Item
                             name={`button-copy-code-${index}`}
@@ -715,7 +715,7 @@ function RichcardNodeSidebar({ selectedNode }) {
                             ]}
                           ></Form.Item>
                         </Col>
-                      )}
+                      )} */}
                     </Row>
                   </Form>
                 )}

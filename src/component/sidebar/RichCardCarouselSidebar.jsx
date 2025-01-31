@@ -421,18 +421,24 @@ function RichCardCarouselSidebar({ selectedNode }) {
     });
   };
 
-  const quickReplyCount = alldata?.data?.richCardCarousels?.cards[cardIndex]?.actions.filter(
-    (btn) => btn.type === "quick"
-  ).length;
-  const quickReplyCount1 = alldata?.data?.richCardCarousels?.cards[cardIndex]?.filter(
-    (btn) => btn.type === "call"
-  ).length;
-  const quickReplyCount2 = alldata?.data?.richCardCarousels?.cards[cardIndex]?.filter(
-    (btn) => btn.type === "url"
-  ).length;
-  const quickReplyCount3 = alldata?.data?.richCardCarousels?.cards[cardIndex]?.filter(
-    (btn) => btn.type === "copy-code"
-  ).length;
+  const card = alldata?.data?.richCardCarousels?.cards[cardIndex]?.actions;
+
+const quickReplyCount = Array.isArray(card?.actions)
+  ? card.actions.filter((btn) => btn.type === "quick").length
+  : 0;
+
+const quickReplyCount1 = Array.isArray(card)
+  ? card.filter((btn) => btn.type === "call").length
+  : 0;
+
+const quickReplyCount2 = Array.isArray(card)
+  ? card.filter((btn) => btn.type === "url").length
+  : 0;
+
+const quickReplyCount3 = Array.isArray(card)
+  ? card.filter((btn) => btn.type === "copy-code").length
+  : 0;
+
 
   const deleteCard = (index) => {
     if (richCardCarousels?.cards[cardIndex]?.actions?.length > 1) {
@@ -869,22 +875,22 @@ function RichCardCarouselSidebar({ selectedNode }) {
                             {
                               value: "quick",
                               label: "Quick Reply",
-                              disabled: quickReplyCount >= 3,
+                              disabled: quickReplyCount >= 3, 
                             },
                             {
                               value: "call",
                               label: "Call Button",
-                              disabled: quickReplyCount1 >= 1,
+                              disabled: quickReplyCount1 >= 1, 
                             },
                             {
                               value: "url",
                               label: "URL Button",
-                              disabled: quickReplyCount2 >= 1,
+                              disabled: quickReplyCount2 >= 1, 
                             },
                             {
                               value: "copy-code",
                               label: "Copy Code",
-                              disabled: quickReplyCount3 >= 1,
+                              disabled: quickReplyCount3 >= 1, 
                             },
                           ]}
                         />
@@ -997,7 +1003,7 @@ function RichCardCarouselSidebar({ selectedNode }) {
                         </Form.Item>
                       </Col>
                     )}
-                    {btn.type === "copy-code" && (
+                    {/* {btn.type === "copy-code" && (
                       <Col md={24}>
                         <Form.Item
                           name={`button-copy-code-${index}`}
@@ -1015,7 +1021,7 @@ function RichCardCarouselSidebar({ selectedNode }) {
                           ]}
                         ></Form.Item>
                       </Col>
-                    )}
+                    )} */}
                   </Row>
                 </Form>
               )}

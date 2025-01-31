@@ -54,7 +54,7 @@ function Sidebar({ collapsed }) {
       id: 5,
       name: "List/Menu",
       type: "list",
-      bgColor: "#F2AF41",
+      bgColor: "#bfab7c",
       icons: <UnorderedListOutlined  style={{ fontSize: "20px" }} />,
     },
     {

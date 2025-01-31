@@ -22,10 +22,18 @@ import {
 } from "antd";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  setRichCardNodeData,
-  setUpdateNodeData,
-} from "../redux/reducer.button";
+// import {
+//   setRichCardNodeData,
+//   setUpdateNodeData,
+// } from "../redux/reducer.button";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css"; // for basic Swiper styles
+import "swiper/css/effect-coverflow"; // for coverflow effect styles
+import "swiper/css/pagination"; // for pagination styles
+import { EffectCoverflow } from "swiper/modules";
+import { setUpdateNodeData } from "../redux/reducer.button";
+
+// import { Pagination } from "swiper";
 const blinkingBorderStyle = {
   animation: "blink-border 1s infinite",
 };
@@ -49,7 +57,11 @@ function MediaNode({ data, selected }) {
   const [isHovered, setIsHovered] = useState(false);
   const [isConnectedToStartNode, setIsConnectedToStartNode] = useState(false);
   const [isRightHandleConnected, setIsRightHandleConnected] = useState(false);
+  // const [activeSlide, setActiveSlide] = useState(0);
 
+  // const handleSlideClick = (index) => {
+  //   setActiveSlide(index);
+  // };
   const checkParentNodesForStart = (nodeId) => {
     const parentEdges = edges.filter((edge) => edge.target === nodeId);
     if (parentEdges.length === 0) return false;
@@ -73,7 +85,7 @@ function MediaNode({ data, selected }) {
     if (data.isStartNode || alldata?.data?.isStartNode) return;
 
     dispatch(
-      setRichCardNodeData({
+      setUpdateNodeData({
         selectedNode: id,
         key: "disabled",
         value: !checked,
@@ -87,7 +99,7 @@ function MediaNode({ data, selected }) {
     connectedNodes.forEach((node) => {
       // Dispatch action to disable each connected node
       dispatch(
-        setRichCardNodeData({
+        setUpdateNodeData({
           selectedNode: node.id,
           key: "disabled",
           value: !node.data.disabled, // Disabling the node
@@ -290,7 +302,7 @@ function MediaNode({ data, selected }) {
       <div
         style={{
           borderRadius: "16px",
-          paddingTop: "1px",
+          paddingTop: "-1px",
           ...nodeStyle,
         }}
         onMouseEnter={() => {
@@ -358,15 +370,10 @@ function MediaNode({ data, selected }) {
             </Flex>
           </div>
 
-          <div className="card-body">
-            <Flex
-              Direction="column"
-              gap={2}
-              style={{
-                padding: "0",
-              }}
-            >
-              {alldata?.data?.mediaArray?.length > 0 ? (
+          <div className="card-body" style={{ width: 200 }}>
+            <>
+         
+              {/* {alldata?.data?.mediaArray?.length > 0 ? (
                 alldata?.data?.mediaArray.map((media, index) => (
                   <>
                     <Flex
@@ -416,8 +423,97 @@ function MediaNode({ data, selected }) {
                   }}
                   preview={false}
                 />
+              )} */}
+
+              {alldata?.data?.mediaArray?.length > 0 ? (
+                <Swiper
+                  effect={"coverflow"}
+                  grabCursor={true}
+                  centeredSlides={true}
+                  slidesPerView={3}
+                  loop={true}
+                  modules={[EffectCoverflow]}
+                  pagination={{ clickable: true }}
+                  coverflowEffect={{
+                    rotate: 0,
+                    stretch: 0,
+                    depth: 120,
+                    modifier: 2,
+                    slideShadows: false,
+                  }}
+                  className="carousel-container"
+                  style={{marginBottom:"-6px"}}
+                  // onSlideChange={(swiper) => setActiveSlide(swiper.activeIndex)}
+                >
+                  {alldata?.data?.mediaArray.map((slide, index) => (
+                    <SwiperSlide
+                      key={index}
+                      // onClick={() => handleSlideClick(index)}
+                      style={{
+                        cursor: "pointer",
+                        // transform:
+                        //   activeSlide === index ? "scale(1.1)" : "scale(0.9)",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: "100%",
+                          display: "flex",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <img
+                          src={slide.url}
+                          alt={`Media ${index}`}
+                          style={{
+                            width: "248%", // 90% screen width lega
+                            maxWidth: "900px", // Max width set kar sakte hain
+                            height: "120px", // Auto height maintain karega
+                            objectFit: "cover",
+                            borderRadius: "14px",
+                            marginTop:"5px",
+                          }}
+                        />
+                      </div>
+                      {/* <div
+                        style={{
+                          width: "100%",
+                          display: "flex",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <img
+                          src={slide.url}
+                          alt={`Media ${index}`}
+                          style={{
+                            width: "250px",
+                            height: "100px", 
+                            objectFit: "cover",
+                            borderRadius: "14px",
+                            marginTop:"5px"
+                          }}
+                        />
+                      </div> */}
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              ) : (
+                <Image
+                  src={
+                    "https://medcities.org/wp-content/uploads/2021/05/generic_image_medcities-1.jpg"
+                  }
+                  alt="example"
+                  style={{
+                    marginTop: "3px",
+                    borderRadius: "14px",
+                    width: "200px",
+                    height: "100px",
+                    objectFit: "cover",
+                  }}
+                  preview={false}
+                />
               )}
-            </Flex>
+            </>
             <Handle
               type={
                 alldata?.data?.isStartNode || data.isStartNode
@@ -451,7 +547,7 @@ function MediaNode({ data, selected }) {
                 top: "-50px",
                 // left:"-50.1%",
                 // right:"-50.1%",
-              
+
                 left: alldata?.data?.isStartNode ? "auto" : "-50.1%",
                 right: alldata?.data?.isStartNode ? "-50.1%" : "null",
               }}

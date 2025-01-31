@@ -618,7 +618,7 @@ const TextNode = ({ data, selected }) => {
           }}
         >
           <div className="inverted-border-radius shadow-blue">
-            <Flex className="flex-grow" align="center" justify="space-between">
+            <Flex className="flex-grow" align="center" justify="space-between"  style={{padding:"5px"}}>
               <Typography
                 className="title-name"
                 style={{ marginBottom: "7px" }}

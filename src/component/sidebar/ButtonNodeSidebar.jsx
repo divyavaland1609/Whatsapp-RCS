@@ -568,7 +568,7 @@ const quickReplyCount3 = data.actions.filter(btn => btn.type === "copy-code").le
                         </Form.Item>
                       </Col>
                     )}
-                    {action.type === "copy-code" && (
+                    {/* {action.type === "copy-code" && (
                       <Col md={24}>
                         <Form.Item
                           name={`button-copy-code-${index}`}
@@ -586,7 +586,7 @@ const quickReplyCount3 = data.actions.filter(btn => btn.type === "copy-code").le
                           ]}
                         ></Form.Item>
                       </Col>
-                    )}
+                    )} */}
                   </Row>
                 </Form>
               )}

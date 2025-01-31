@@ -364,7 +364,7 @@ const ButtonNode = ({ data, selected }) => {
             className="inverted-border-radius  shadow-pink"
             style={{ paddingTop: "1px 1px 1px" }}
           >
-            <Flex className="flex-grow" align="center" justify="space-between">
+            <Flex className="flex-grow" align="center" justify="space-between" >
               <Typography className="title-name">
                 {alldata?.data?.templateName ?? "Text with Button"}
               </Typography>

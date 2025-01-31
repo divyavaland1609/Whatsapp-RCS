@@ -506,7 +506,6 @@
 
 // export default ListNode;
 
-
 import React, { useEffect, useRef, useState } from "react";
 import { Handle, Position } from "@xyflow/react";
 import {
@@ -538,7 +537,6 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 
 import { setUpdateNodeData } from "../redux/reducer.button";
-
 
 // import { setUpdateNodeData } from "../../redux/nodesSlice";
 const { Title, Text } = Typography;
@@ -817,8 +815,13 @@ const ListNode = ({ data, selected }) => {
           }}
           onMouseLeave={() => setIsHovered(false)}
         >
-          <div className="inverted-border-radius shadow-red">
-            <Flex className="flex-grow" align="center" justify="space-between">
+          <div className="inverted-border-radius shadow-brown">
+            <Flex
+              className="flex-grow"
+              align="center"
+              justify="space-between"
+              style={{ padding: "4px" }}
+            >
               <Typography className="title-name">
                 {alldata?.data?.templateName ?? "List Message"}
               </Typography>
@@ -957,7 +960,7 @@ const ListNode = ({ data, selected }) => {
                     style={{
                       fontSize: "10px",
                       margin: "2px",
-                      color: "blue",
+                      color: "#007DC0",
                       padding: "3px",
                     }}
                   >
@@ -966,81 +969,85 @@ const ListNode = ({ data, selected }) => {
                   </Title>
 
                   <div>
-                    {alldata?.data?.actions?.map((action, i) => (
-                      <div
-                        key={i}
-                        style={{
-                          position: "relative",
-                        }}
-                      >
-                        {/* Handle for each action */}
-                        <Handle
-                          id={`handle-${i}`}
-                          type="source"
-                          position={Position.Right}
-                          isConnectable
-                          style={{
-                            background: "transparent",
-                            position: "absolute",
-                            width: "18px",
-                            border: "none",
-                            right: "-11px",
-                            top: "50%",
-                            height: "37px",
-                            zIndex: 10,
-                            transform: "translateY(-50%)",
-                            visibility: alldata?.data?.isStartNode
-                              ? "visible"
-                              : "visible",
-                          }}
-                        />
-                        <div
-                          style={{
-                            height: "6px",
-                            display: "flex",
-                            position: "absolute",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            top: "45%",
-                            left: alldata?.data?.isStartNode ? "auto" : "197px",
-                            right: alldata?.data?.isStartNode ? "-5px" : "",
-                          }}
-                        >
-                          {data?.isStartNode || alldata?.data?.isStartNode ? (
-                            <>
-                              {isConnected ? (
-                                <Badge status="success" />
-                              ) : (
-                                <Badge status="processing" />
-                              )}
-                            </>
-                          ) : (
-                            <>
-                              {isConnectedToStartNode ? (
-                                <Badge status="success" />
-                              ) : (
-                                <Badge status="processing" />
-                              )}
-                            </>
-                          )}
+                    {alldata?.data?.actions?.length > 0 ? (
+                      alldata.data.actions.map((action, i) => (
+                        <div key={i} style={{ position: "relative" }}>
+                          {/* Handle for each action */}
+                          <Handle
+                            id={`handle-${i}`}
+                            type="source"
+                            position={Position.Right}
+                            isConnectable
+                            style={{
+                              background: "transparent",
+                              position: "absolute",
+                              width: "18px",
+                              border: "none",
+                              right: "-11px",
+                              top: "50%",
+                              height: "37px",
+                              zIndex: 10,
+                              transform: "translateY(-50%)",
+                              visibility: alldata?.data?.isStartNode
+                                ? "visible"
+                                : "visible",
+                            }}
+                          />
+                          <div
+                            style={{
+                              height: "6px",
+                              display: "flex",
+                              position: "absolute",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              top: "45%",
+                              left: alldata?.data?.isStartNode
+                                ? "auto"
+                                : "197px",
+                              right: alldata?.data?.isStartNode ? "-5px" : "",
+                            }}
+                          >
+                            {data?.isStartNode || alldata?.data?.isStartNode ? (
+                              <>
+                                {isConnected ? (
+                                  <Badge status="success" />
+                                ) : (
+                                  <Badge status="processing" />
+                                )}
+                              </>
+                            ) : (
+                              <>
+                                {isConnectedToStartNode ? (
+                                  <Badge status="success" />
+                                ) : (
+                                  <Badge status="processing" />
+                                )}
+                              </>
+                            )}
+                          </div>
+                          <Flex vertical style={{ padding: "6px" }}>
+                            <Text
+                              style={{
+                                justifyContent: "center",
+                                fontSize: "11px",
+                              }}
+                            >
+                              {action.title || `List ${i + 1}`}
+                            </Text>
+                            <Text
+                              style={{
+                                justifyContent: "center",
+                                fontSize: "11px",
+                                color: "grey",
+                              }}
+                            >
+                              {action.description}
+                            </Text>
+                          </Flex>
                         </div>
-                        {/* <Handle
-                          type="target"
-                          position={Position.Left}
-                          isConnectable
-                          style={{
-                            background: "transparent",
-                            position: "absolute",
-                            width: "20px",
-                            left: "-10px",
-                            border: "none",
-                            top: "50%",
-                            height: "40px",
-                            zIndex: 10,
-                            transform: "translateY(-50%)",
-                          }}
-                        /> */}
-
+                      ))
+                    ) : (
+                      <div>
                         <Flex vertical style={{ padding: "6px" }}>
                           <Text
                             style={{
@@ -1048,44 +1055,20 @@ const ListNode = ({ data, selected }) => {
                               fontSize: "11px",
                             }}
                           >
-                            {action.title || `List ${i + 1}`}
+                            List 1
                           </Text>
-                          <Text
-                            style={{
-                              justifyContent: "center",
-                              fontSize: "11px",
-                              color: "grey",
-                            }}
-                          >
-                            {action.description}
-                          </Text>
+                          {/* <Text
+                              style={{
+                                justifyContent: "center",
+                                fontSize: "11px",
+                                color: "grey",
+                              }}
+                            >
+                              {action.description}
+                            </Text> */}
                         </Flex>
-
-                        {/* Badge Indicator */}
-                        {/* <div
-                          style={{
-                            height: "6px",
-                            display: "flex",
-                            position: "absolute",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            top: "50%",
-                            left: "-18px",
-                            transform: "translateY(-50%)",
-                          }}
-                        >
-                          {isConnected || isConnectedToStartNode ? (
-                            <Badge status="success" />
-                          ) : (
-                            <Badge status="processing" />
-                          )}
-                        </div> */}
-
-                        {/* {i < alldata?.data?.actions.length - 1 && (
-                          <Divider style={{ margin: 5 }} />
-                        )} */}
                       </div>
-                    ))}
+                    )}
                   </div>
                 </>
               )}
