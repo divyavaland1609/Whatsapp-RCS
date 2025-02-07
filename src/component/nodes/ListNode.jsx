@@ -806,8 +806,8 @@ const ListNode = ({ data, selected }) => {
 
         <div
           style={{
-            borderRadius: "16px",
-            paddingTop: "1.4px",
+            borderRadius: "17px",
+            paddingTop: "3px",
             ...nodeStyle,
           }}
           onMouseEnter={() => {

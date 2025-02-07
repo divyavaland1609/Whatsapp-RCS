@@ -254,6 +254,7 @@ function RichcardNodeSidebar({ selectedNode }) {
   const props = {
     name: "file",
     multiple: false,
+    accept: ".png,.jpg,.jpeg,.mp4,.pdf",
     onChange(info) {
       const { status } = info.file;
       if (status !== "uploading") {
@@ -261,9 +262,18 @@ function RichcardNodeSidebar({ selectedNode }) {
       }
       if (status === "done") {
         setImageUrl(info.file);
-        const value = info.file.response.url;
-        const data = { selectedNode, value, key: "mediaUrl" };
+        const mediaUrl =
+          info.file.response?.url ||
+          URL.createObjectURL(info.file.originFileObj);
+        const mediaType = info.file.type;
+
+        const data = {
+          selectedNode,
+          value: { url: mediaUrl, type: mediaType },
+          key: "mediaUrl",
+        };
         dispatch(setRichCardNodeData(data));
+
         message.success(`${info.file.name} file uploaded successfully.`);
       } else if (status === "error") {
         message.error(`${info.file.name} file upload failed.`);
@@ -273,9 +283,21 @@ function RichcardNodeSidebar({ selectedNode }) {
 
   const customUpload = ({ file, onSuccess, onError }) => {
     try {
-      const img = new Image();
-      img.src = URL.createObjectURL(file);
-      onSuccess({ url: img.src });
+      const fileType = file.type;
+      if (
+        !["image/png", "image/jpeg", "video/mp4", "application/pdf"].includes(
+          fileType
+        )
+      ) {
+        onError("Unsupported file format");
+        return;
+      }
+
+      // Simulate the upload process
+      setTimeout(() => {
+        const fileUrl = URL.createObjectURL(file);
+        onSuccess({ url: fileUrl });
+      }, 1000);
     } catch (error) {
       onError(error);
     }
@@ -374,18 +396,62 @@ function RichcardNodeSidebar({ selectedNode }) {
                 customRequest={customUpload}
                 style={{ padding: 10 }}
               >
-                {imageUrl ? (
-                  <img
-                    src={imageUrl?.response?.url || imageUrl}
-                    alt="avatar"
-                    style={{
-                      width: "100%",
-                      height: 90,
-                    }}
-                  />
-                ) : (
-                  uploadButton
-                )}
+                {imageUrl
+                  ? 
+                  (() => {
+                      const mediaUrl = imageUrl.response?.url || imageUrl;
+                      const fileType = imageUrl.type;
+
+                      if (fileType?.includes("image")) {
+                        return (
+                          <img
+                            src={mediaUrl}
+                            alt="avatar"
+                            style={{ width: "100%", height: 90 }}
+                          />
+                        );
+                      }
+                      if (fileType === "video/mp4") {
+                        return (
+                          <video
+                            src={mediaUrl}
+                            controls
+                            style={{ width: "100%", height: 90 }}
+                          />
+                        );
+                      }
+                      if (fileType === "application/pdf") {
+                        return (
+                          <div>
+                            <iframe
+                              src={mediaUrl}
+                              title="PDF Preview"
+                              style={{
+                                width: "100%",
+                                height: 90,
+                                border: "none",
+                              }}
+                            />
+                            {/* <a
+                              href={mediaUrl}
+                              download="Document.pdf"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              style={{
+                                display: "block",
+                                marginTop: 5,
+                                textDecoration: "underline",
+                                color: "#1890ff",
+                              }}
+                            >
+                              Download PDF
+                            </a> */}
+                          </div>
+                        );
+                      }
+                      return null;
+                    })()
+                  : uploadButton}
               </Dragger>
               {imageUrl && (
                 <DeleteOutlined

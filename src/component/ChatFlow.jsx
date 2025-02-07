@@ -238,14 +238,64 @@ const ChatFlow = ({ styles, nodeData, edges }) => {
       case "richcard":
         return (
           <div className="chat-message card-message">
-            <img
-              src={
-                item?.originData?.mediaUrl ||
-                "https://medcities.org/wp-content/uploads/2021/05/generic_image_medcities-1.jpg"
-              }
-              alt="custom content"
-              className="chat-image"
-            />
+            {item?.originData?.mediaUrl ? (
+              (() => {
+                const mediaUrl = item?.originData?.mediaUrl?.url;
+                const fileType = item?.originData?.mediaUrl?.type;
+
+                if (fileType?.includes("image")) {
+                  return (
+                    <img
+                      src={mediaUrl}
+                      alt="custom content"
+                      className="chat-image"
+                    />
+                  );
+                }
+                if (fileType === "video/mp4") {
+                  return (
+                    <video src={mediaUrl} controls className="chat-image" />
+                  );
+                }
+                if (fileType === "application/pdf") {
+                  return (
+                    <div>
+                      <iframe
+                        src={mediaUrl}
+                        title="PDF Preview"
+                        className="chat-image"
+                        style={{
+                          border: "none",
+                        }}
+                      />
+                      {/* <a
+            href={mediaUrl}
+            download="Document.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "block",
+              marginTop: 5,
+              textDecoration: "underline",
+              color: "#1890ff",
+            }}
+          >
+            Download PDF
+          </a> */}
+                    </div>
+                  );
+                }
+                return null;
+              })()
+            ) : (
+              <img
+                src={
+                  "https://medcities.org/wp-content/uploads/2021/05/generic_image_medcities-1.jpg"
+                }
+                alt="custom content"
+                className="chat-image"
+              />
+            )}
 
             <Typography.Text className="title">
               <small
@@ -511,98 +561,97 @@ const ChatFlow = ({ styles, nodeData, edges }) => {
             ))}
           </div>
         );
-        case "list":
-          return (
+      case "list":
+        return (
+          <div
+            className={`chat-message ${
+              item?.originData?.role === "user"
+                ? "reply-message"
+                : "text-message"
+            }`}
+          >
+            {console.log("33-->", item?.originData)}
             <div
-              className={`chat-message ${
-                item?.originData?.role === "user"
-                  ? "reply-message"
-                  : "text-message"
-              }`}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                fontWeight: "bold",
+                lineHeight: "1.2",
+              }}
+              className="message-text"
+              dangerouslySetInnerHTML={{
+                __html:
+                  item?.originData?.menuTitle?.replace(/\n/g, "<br/>") ||
+                  "message",
+              }}
+            />
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                lineHeight: "1.2",
+              }}
+              className="message-text"
+              dangerouslySetInnerHTML={{
+                __html:
+                  item?.originData?.middleTitle?.replace(/\n/g, "<br/>") ||
+                  "message",
+              }}
+            />
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                lineHeight: "1.2",
+              }}
+              className="message-text"
+              dangerouslySetInnerHTML={{
+                __html:
+                  item?.originData?.footerTitle?.replace(/\n/g, "<br/>") ||
+                  "message",
+              }}
+            />
+            {Array.isArray(item?.originData?.actions) ? (
+              <Divider style={{ margin: "0px" }} />
+            ) : (
+              ""
+            )}
+            <Button
+              size="small"
+              block
+              type="text"
+              onClick={() => {
+                console.log("button clicked"),
+                  handleOpen(),
+                  console.log("button clicked2");
+              }}
             >
-              {console.log("33-->", item?.originData)}
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  fontWeight: "bold",
-                  lineHeight:"1.2"
-                }}
-                className="message-text"
-                dangerouslySetInnerHTML={{
-                  __html:
-                    item?.originData?.menuTitle?.replace(/\n/g, "<br/>") ||
-                    "message",
-                }}
-              />
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  lineHeight:"1.2"
-                }}
-                className="message-text"
-                dangerouslySetInnerHTML={{
-                  __html:
-                    item?.originData?.middleTitle?.replace(/\n/g, "<br/>") ||
-                    "message",
-                }}
-              />
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  lineHeight:"1.2"
-                }}
-                className="message-text"
-                dangerouslySetInnerHTML={{
-                  __html:
-                    item?.originData?.footerTitle?.replace(/\n/g, "<br/>") ||
-                    "message",
-                }}
-              />
-              {Array.isArray(item?.originData?.actions) ? (
-                <Divider style={{ margin: "0px" }} />
-              ) : (
-                ""
-              )}
-              <Button
-                size="small"
-                block
-                type="text"
+              <MessageOutlined
                 onClick={() => {
-                 console.log("button clicked"), 
-                 handleOpen(),
-                 console.log("button clicked2")
-  
+                  handleOpen();
                 }}
-              >
-                <MessageOutlined
-                  onClick={() => {
-                     handleOpen();
-                  }}
-                />
-                List
-              </Button>
-              <Drawer
-                title="Basic Drawer"
-                // placement="bottom"
-                // closable={true}
-                onClose={handleClose} // Use a callback reference
-                open={open} // Controlled by state
-                // key="bottom"
-                style={{ background: "red" }}
-              >
-                <p>Some contents...</p>
-                <p>Some contents...</p>
-                <p>Some contents...</p>
-              </Drawer>
-              {/* {Array.isArray(item.originData.actions) &&
+              />
+              List
+            </Button>
+            <Drawer
+              title="Basic Drawer"
+              // placement="bottom"
+              // closable={true}
+              onClose={handleClose} // Use a callback reference
+              open={open} // Controlled by state
+              // key="bottom"
+              style={{ background: "red" }}
+            >
+              <p>Some contents...</p>
+              <p>Some contents...</p>
+              <p>Some contents...</p>
+            </Drawer>
+            {/* {Array.isArray(item.originData.actions) &&
                 item.originData.actions.length > 1 && (
                   <Divider style={{ margin: "0px" }} />
                 )} */}
-            </div>
-          );
+          </div>
+        );
       case "Text":
         return (
           <div

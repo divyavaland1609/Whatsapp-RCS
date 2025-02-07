@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from "react";
-import { Handle, Position } from "@xyflow/react";
+import { Handle, Position, useReactFlow } from "@xyflow/react";
 import {
   Badge,
   Button,
@@ -71,6 +71,29 @@ const ButtonNode = ({ data, selected }) => {
       (edge) => edge.source === nodeId || edge.target === nodeId
     );
   };
+
+
+
+  const reactFlowInstance = useReactFlow();
+
+  useEffect(() => {
+   const buttonActions = alldata?.data?.actions || [];
+   const handleId = new Set(
+     buttonActions
+       .map((action, index) => (action.type === "quick" ? `handle-${index}` : null))
+       .filter(Boolean)
+   );
+
+   reactFlowInstance.setEdges((prevEdges) =>
+     prevEdges.filter((edge) => {
+       return (
+         edge.source !== id ||
+         !edge.sourceHandle ||
+         handleId.has(edge.sourceHandle)
+       );
+     })
+   );
+ }, [alldata?.data?.actions, reactFlowInstance, id]);
 
   const connected = isNodeConnected(id);
 

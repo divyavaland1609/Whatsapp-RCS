@@ -12,7 +12,7 @@ import {
   MoreOutlined,
   PhoneOutlined,
 } from "@ant-design/icons";
-import { Handle, Position } from "@xyflow/react";
+import { Handle, Position, useReactFlow } from "@xyflow/react";
 import {
   Badge,
   Button,
@@ -66,6 +66,34 @@ function RichcardCarouselNode({ data, selected }) {
       );
     });
   };
+
+  const reactFlowInstance = useReactFlow();
+
+  useEffect(() => {
+    const cards = alldata?.data?.richCardCarousels?.cards || [];
+
+    const handleId = new Set(
+      cards
+        .flatMap((card, cardIndex) =>
+          (card.actions || []).map((action, actionIndex) =>
+            action.type === "quick"
+              ? `handle-${cardIndex}-${actionIndex}`
+              : null
+          )
+        )
+        .filter(Boolean)
+    );
+
+    reactFlowInstance.setEdges((prevEdges) =>
+      prevEdges.filter((edge) => {
+        return (
+          edge.source !== id ||
+          !edge.sourceHandle ||
+          handleId.has(edge.sourceHandle)
+        );
+      })
+    );
+  }, [alldata?.data?.richCardCarousels?.cards, reactFlowInstance, id]);
 
   useEffect(() => {
     const connectedToStart = checkParentNodesForStart(id);
@@ -479,30 +507,88 @@ function RichcardCarouselNode({ data, selected }) {
                         justifyContent: "flex-start",
                       }}
                     >
-                      <Image
-                        style={{
-                          borderRadius: "11px",
-                          objectFit: "cover",
-                          height:
-                            card?.size === "short"
-                              ? "100px"
-                              : card?.size === "tall"
-                              ? "150px"
-                              : "120px",
-                          width:
-                            alldata?.data?.cardWidth === 1
-                              ? "12vw"
-                              : alldata?.data?.cardWidth === 0
-                              ? "9vw"
-                              : "9vw",
-                        }}
-                        preview={false}
-                        alt="example"
-                        src={
-                          card?.media ||
-                          "https://medcities.org/wp-content/uploads/2021/05/generic_image_medcities-1.jpg"
-                        }
-                      />
+                      {card?.media ? (
+                        (() => {
+                          const mediaUrl = card?.media;
+                          const fileType = card?.mediaType;
+                          console.log("media-->", card);
+
+                          if (fileType?.includes("image")) {
+                            return (
+                              <Image
+                                style={{
+                                  borderRadius: "11px",
+                                  objectFit: "cover",
+                                  height:
+                                    card?.size === "short"
+                                      ? "100px"
+                                      : card?.size === "tall"
+                                      ? "150px"
+                                      : "120px",
+                                      width:
+                                      alldata?.data?.cardWidth === 1
+                                        ? "230.4px"
+                                        : alldata?.data?.cardWidth === 0
+                                        ? "172.8px"
+                                        : "172.8px",
+                                }}
+                                src={mediaUrl}
+                                alt="Media not found"
+                                preview={false}
+                              />
+                            );
+                          }
+                          if (fileType === "video/mp4") {
+                            return (
+                              <video
+                                src={mediaUrl}
+                                controls
+                                style={{
+                                  borderRadius: "11px",
+                                  objectFit: "cover",
+                                  height:
+                                    card?.size === "short"
+                                      ? "100px"
+                                      : card?.size === "tall"
+                                      ? "150px"
+                                      : "120px",
+                                  width:
+                                    alldata?.data?.cardWidth === 1
+                                      ? "12vw"
+                                      : alldata?.data?.cardWidth === 0
+                                      ? "9vw"
+                                      : "9vw",
+                                }}
+                              />
+                            );
+                          }
+                          return null;
+                        })()
+                      ) : (
+                        <Image
+                          style={{
+                            borderRadius: "11px",
+                            objectFit: "cover",
+                            height:
+                              card?.size === "short"
+                                ? "100px"
+                                : card?.size === "tall"
+                                ? "150px"
+                                : "120px",
+                            width:
+                              alldata?.data?.cardWidth === 1
+                                ? "230.4px"
+                                : alldata?.data?.cardWidth === 0
+                                ? "172.8px"
+                                : "172.8px",
+                          }}
+                          preview={false}
+                          alt="example"
+                          src={
+                            "https://medcities.org/wp-content/uploads/2021/05/generic_image_medcities-1.jpg"
+                          }
+                        />
+                      )}
 
                       <Typography
                         style={{

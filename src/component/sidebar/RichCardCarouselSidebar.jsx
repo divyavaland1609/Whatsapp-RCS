@@ -21,7 +21,6 @@ import Dragger from "antd/es/upload/Dragger";
 import {
   CalendarOutlined,
   CloseOutlined,
-  CopyOutlined,
   DeleteOutlined,
   EditOutlined,
   EnvironmentOutlined,
@@ -41,10 +40,13 @@ import {
 import TextEditor from "../nodes/Texteditor";
 import PhoneInput from "react-phone-input-2";
 const { Option } = Select;
+import { v4 as uuidv4 } from "uuid";
+import { useReactFlow } from "@xyflow/react";
 
 function RichCardCarouselSidebar({ selectedNode }) {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
+  const reactFlowInstance = useReactFlow();
   const nodes = useSelector((state) => state.nodes.nodes);
   const alldata = useMemo(
     () => nodes?.find((element) => element?.id === selectedNode),
@@ -81,7 +83,7 @@ function RichCardCarouselSidebar({ selectedNode }) {
         media: "",
         actions: alldata?.data?.richCardCarousels?.cards[0]?.actions ?? [
           {
-            id: 0,
+            id: uuidv4(),
             type: "quick",
             title: "Default Button",
             payload: "",
@@ -96,7 +98,7 @@ function RichCardCarouselSidebar({ selectedNode }) {
         media: "",
         actions: alldata?.data?.richCardCarousels?.cards[1]?.actions ?? [
           {
-            id: 0,
+            id: uuidv4(),
             type: "quick",
             title: "Default Button",
             payload: "",
@@ -124,7 +126,70 @@ function RichCardCarouselSidebar({ selectedNode }) {
     }, 0);
   };
 
-  useEffect(() => {}, []);
+  // useEffect(() => {
+  //   const originalWidth = window.innerWidth;
+  //   const originalHeight = window.innerHeight;
+  //   console.log("Actions Length:", richCardCarousels?.cards[cardIndex]?.actions?.length);
+  //   console.log("Original Window Size:", originalWidth, originalHeight);
+
+  //   const resizeWindow = () => {
+  //     console.log("Attempting to resize the window to 800x600");
+  //     try {
+  //       window.resizeTo(800, 600);  // Resize window to 800x600
+  //       console.log("Window resized to 800x600");
+  //     } catch (error) {
+  //       console.error("Error resizing the window:", error);
+  //     }
+  //   };
+
+  //   const restoreWindow = () => {
+  //     console.log("Attempting to restore the window size to original size");
+  //     try {
+  //       window.resizeTo(originalWidth, originalHeight);  // Restore to original size
+  //       console.log("Window restored to original size");
+  //     } catch (error) {
+  //       console.error("Error restoring window size:", error);
+  //     }
+  //   };
+
+  //   // Resize the window immediately when actions length changes
+  //   resizeWindow();
+
+  //   // Restore the window after a delay (e.g., 500ms)
+  //   const restoreTimeout = setTimeout(() => {
+  //     restoreWindow();
+  //   }, 500);  // 500ms delay before restoring
+
+  //   // Cleanup the timeout when component unmounts or on re-render
+  //   return () => {
+  //     clearTimeout(restoreTimeout);
+  //     console.log("Cleanup the timeout");
+  //   };
+  // }, [richCardCarousels?.cards[cardIndex]?.actions?.length]);
+
+  // useEffect(() => {
+  //   const originalWidth = window.innerWidth;
+  //   const originalHeight = window.innerHeight;
+  //   console.log("length",richCardCarousels?.cards[cardIndex]?.actions?.length,originalWidth,originalHeight)
+  //   const resizeWindow = () => {
+  //     window.resizeTo(800, 600); // Resize to 800x600
+  //     console.log("first")
+  //   };
+  //   const restoreWindow = () => {
+  //     window.resizeTo(originalWidth, originalHeight);
+  //   };
+
+  //   // Resize the window immediately
+  //   resizeWindow();
+
+  //   // Restore the window after 3 seconds
+  //   const restoreTimeout = setTimeout(() => {
+  //     restoreWindow();
+  //   }, 500); // 3-second delay before restoring
+
+  //   // Cleanup the timeout when component unmounts or on re-render
+  //   return () => clearTimeout(restoreTimeout);
+  // }, [richCardCarousels?.cards[cardIndex]?.actions?.length]);
 
   useEffect(() => {
     if (alldata) {
@@ -138,7 +203,7 @@ function RichCardCarouselSidebar({ selectedNode }) {
           media: "",
           actions: [
             {
-              id: 0,
+              id: uuidv4(),
               type: "quick",
               title: "Default Button",
               payload: "",
@@ -153,7 +218,7 @@ function RichCardCarouselSidebar({ selectedNode }) {
           media: "",
           actions: [
             {
-              id: 0,
+              id: uuidv4(),
               type: "quick",
               title: "Default Button",
               payload: "",
@@ -170,7 +235,9 @@ function RichCardCarouselSidebar({ selectedNode }) {
         (card, index) => `Card ${index + 1}`
       );
       setOptions(defaultOptions);
+
       setCardIndex(0);
+
       const initValues = defaultCards?.reduce((acc, card, index) => {
         acc[`title${index}`] = card.title;
         acc[`description${index}`] = card.description;
@@ -183,7 +250,11 @@ function RichCardCarouselSidebar({ selectedNode }) {
           acc[`button-phoneNumber-${index}-${i}`] = button.phoneNumber;
           acc[`button-url-${index}-${i}`] = button.url;
           acc[`button-label-${index}-${i}`] = button.label;
-          acc[`button-button-copy-code-${i}`] = button.copy;
+          acc[`button-latitude-${index}-${i}`] = button.latitude;
+          acc[`button-longitude-${index}-${i}`] = button.longitude;
+          acc[`button-startDate-${index}-${i}`] = button.startDate;
+          acc[`button-endDate-${index}-${i}`] = button.endDate;
+          acc[`button-description-${index}-${i}`] = button.description;
         });
 
         return acc;
@@ -196,12 +267,20 @@ function RichCardCarouselSidebar({ selectedNode }) {
 
   const customUpload = ({ file, onSuccess, onError }) => {
     try {
-      const img = new Image();
-      img.src = URL.createObjectURL(file);
+      const fileType = file.type;
+      if (
+        !["image/png", "image/jpeg", "video/mp4"].includes(
+          fileType
+        )
+      ) {
+        onError("Unsupported file format");
+        return;
+      }
 
       // Simulating the upload process (replace with real upload logic)
       setTimeout(() => {
-        onSuccess({ url: img.src }); // On success, return the image URL
+        const fileUrl = URL.createObjectURL(file);
+        onSuccess({ url: fileUrl }); // On success, return the file URL
       }, 1000);
     } catch (error) {
       console.error("Upload failed:", error);
@@ -212,30 +291,40 @@ function RichCardCarouselSidebar({ selectedNode }) {
   const props = {
     name: "file",
     multiple: false,
-    onChange(info, index, key) {
+    accept: ".png,.jpg,.jpeg,.mp4",
+    onChange(info) {
       const { status } = info.file;
-      if (info.file.status === "uploading") {
+      if (status === "uploading") {
         setLoading(true);
         return;
       }
-      if (info.file.status === "done") {
+      if (status === "done") {
         setLoading(false);
-        const newImageUrl = URL.createObjectURL(info.file.originFileObj);
+        const fileUrl = URL.createObjectURL(info.file.originFileObj);
 
         setRichCardCarousels((prev) => {
-          const updatedCards = prev.cards.map((card, i) =>
-            i === cardIndex ? { ...card, media: newImageUrl } : card
-          );
+          const updatedCards = [...prev.cards];
+          updatedCards[cardIndex] = {
+            ...updatedCards[cardIndex],
+            media: fileUrl,
+            mediaType: info.file.type,
+          };
 
-          console.log("Updated Cards:", updatedCards); // Debug here
-
-          const value = { ...prev, cards: updatedCards };
-          const data = { selectedNode, value, key: "richCardCarousels" };
-
+          const updatedData = { ...prev, cards: updatedCards };
+          const data = {
+            selectedNode,
+            value: updatedData,
+            key: "richCardCarousels",
+          };
           dispatch(setUpdateNodeData(data));
 
-          return { ...prev, cards: updatedCards };
+          return updatedData;
         });
+      }
+      if (status === "error") {
+        setLoading(false);
+        console.log("Upload error:", info.file.response);
+        message.error(`${info.file.name} file upload failed.`);
       }
     },
   };
@@ -320,6 +409,25 @@ function RichCardCarouselSidebar({ selectedNode }) {
   //   }
   // };
 
+  function checkEdges(index, value) {
+    if (value !== "quick") {
+      reactFlowInstance.setEdges((edges) =>
+        edges.filter(
+          // (edge) => validQuickHandles.includes(edge.sourceHandle || '')
+          (edge) => edge.sourceHandle !== `handle-${cardIndex}-${index}`
+        )
+      );
+    }
+  }
+
+  function deleteEdges(index) {
+    reactFlowInstance.setEdges((edges) =>
+      edges.filter(
+        (edge) => edge.sourceHandle !== `handle-${cardIndex}-${index}`
+      )
+    );
+  }
+
   const uploadButton = (
     <Button
       style={{
@@ -344,14 +452,14 @@ function RichCardCarouselSidebar({ selectedNode }) {
       const newCard = {
         size: value,
         templateName: "",
-        title: `Card  Title`,
-        description: `Card  description`,
+        title: `Card ${richCardCarousels.cards.length} Title`,
+        description: `Card ${richCardCarousels.cards.length} description`,
         media: "",
         actions: [
           {
-            id: 0,
+            id: uuidv4(),
             type: "quick",
-            title: "Default Button",
+            title: "",
             payload: "",
           },
         ],
@@ -380,9 +488,9 @@ function RichCardCarouselSidebar({ selectedNode }) {
             const updatedActions = [
               ...card.actions,
               {
-                id: card.actions.length,
+                id: card?.actions?.length,
                 type: "quick",
-                title: "Default Button",
+                title: "",
                 payload: "",
               },
             ];
@@ -394,7 +502,6 @@ function RichCardCarouselSidebar({ selectedNode }) {
         }
         return card;
       });
-      setCardIndex(0);
       const initialValues = richCardCarousels?.cards[
         cardIndex
       ]?.actions?.reduce((acc, button, i) => {
@@ -421,27 +528,9 @@ function RichCardCarouselSidebar({ selectedNode }) {
     });
   };
 
-  const card = alldata?.data?.richCardCarousels?.cards[cardIndex]?.actions;
-
-const quickReplyCount = Array.isArray(card?.actions)
-  ? card.actions.filter((btn) => btn.type === "quick").length
-  : 0;
-
-const quickReplyCount1 = Array.isArray(card)
-  ? card.filter((btn) => btn.type === "call").length
-  : 0;
-
-const quickReplyCount2 = Array.isArray(card)
-  ? card.filter((btn) => btn.type === "url").length
-  : 0;
-
-const quickReplyCount3 = Array.isArray(card)
-  ? card.filter((btn) => btn.type === "copy-code").length
-  : 0;
-
-
   const deleteCard = (index) => {
     if (richCardCarousels?.cards[cardIndex]?.actions?.length > 1) {
+      deleteEdges(index);
       const updatedRichCardCarousels = {
         ...richCardCarousels,
         cards: richCardCarousels.cards.map((card, i) => {
@@ -456,7 +545,6 @@ const quickReplyCount3 = Array.isArray(card)
           return card;
         }),
       };
-      setCardIndex(0);
       const initialValues = richCardCarousels?.cards[
         cardIndex
       ]?.actions?.reduce((acc, button, i) => {
@@ -466,7 +554,11 @@ const quickReplyCount3 = Array.isArray(card)
         acc[`button-phoneNumber-${cardIndex}-${i}`] = button.phoneNumber;
         acc[`button-url-${cardIndex}-${i}`] = button.url;
         acc[`button-label-${cardIndex}-${i}`] = button.label;
-        acc[`button-button-copy-code-${i}`] = button.copy;
+        acc[`button-latitude-${cardIndex}-${i}`] = button.latitude;
+        acc[`button-longitude-${cardIndex}-${i}`] = button.longitude;
+        acc[`button-startDate-${cardIndex}-${i}`] = button.startDate;
+        acc[`button-endDate-${cardIndex}-${i}`] = button.endDate;
+        acc[`button-description-${cardIndex}-${i}`] = button.description;
         return acc;
       }, {});
       form.resetFields();
@@ -484,6 +576,9 @@ const quickReplyCount3 = Array.isArray(card)
   };
 
   const handleChange = (index, type, value) => {
+    if (type === "type") {
+      checkEdges(index, value);
+    }
     setRichCardCarousels((prev) => {
       const updatedCards = prev.cards.map((card, i) => {
         if (i === cardIndex) {
@@ -682,33 +777,30 @@ const quickReplyCount3 = Array.isArray(card)
               >
                 {alldata?.data?.richCardCarousels?.cards[cardIndex]?.media ? (
                   <>
-                    {/* <div
-                    style={{ position: "relative" }}
-                   > */}
-                    <img
-                      src={
-                        alldata?.data?.richCardCarousels?.cards[cardIndex]
-                          ?.media
+                    {(() => {
+                      const { media, mediaType } =
+                        alldata.data.richCardCarousels.cards[cardIndex];
+                      if (mediaType?.includes("image")) {
+                        return (
+                          <img
+                            src={media}
+                            alt="media"
+                            style={{ width: "100%", height: 90 }}
+                          />
+                        );
                       }
-                      alt="avatar"
-                      style={{
-                        width: "100%",
-                        // objectFit: "scale-down",
-                        height: 90,
-                      }}
-                    />
-                    {/* Delete icon */}
-                    {/* <DeleteOutlined
-                      style={{
-                        position: "absolute",
-                        top: -7,
-                        right: -64,
-                        color: "red",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => handleDeleteImage(cardIndex)} // Pass the cardIndex to the delete handler
-                    /> */}
-                    {/* </div> */}
+                      if (mediaType === "video/mp4") {
+                        return (
+                          <video
+                            src={media}
+                            controls
+                            style={{ width: "100%", height: 90 }}
+                          />
+                        );
+                      }
+                     
+                      return null;
+                    })()}
                   </>
                 ) : (
                   uploadButton
@@ -1003,25 +1095,179 @@ const quickReplyCount3 = Array.isArray(card)
                         </Form.Item>
                       </Col>
                     )}
-                    {/* {btn.type === "copy-code" && (
-                      <Col md={24}>
-                        <Form.Item
-                          name={`button-copy-code-${index}`}
-                          // label="URL"
-                          initialValue={btn.payload}
-                          rules={[
-                            {
-                              required: true,
-                              message: "Copy Code is required",
-                            },
-                            {
-                              type: "copy-code",
-                              message: "Enter a valid Copy Code",
-                            },
-                          ]}
-                        ></Form.Item>
-                      </Col>
-                    )} */}
+                    {btn.type === "location" && (
+                      <>
+                        <Col md={12}>
+                          <Form.Item
+                            name={`button-longitude-${cardIndex}-${index}`}
+                            label="Longitude"
+                            initialValue={btn.longitude}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Longitude is required",
+                              },
+                              {
+                                type: "number",
+                                min: -180,
+                                max: 180,
+                                message: "Longitude between -180 to 180",
+                              },
+                            ]}
+                          >
+                            <InputNumber
+                              size="small"
+                              style={{ width: "100%" }}
+                              value={btn.longitude}
+                              onChange={(value) =>
+                                handleChange(index, "longitude", value)
+                              }
+                              placeholder="Enter Longitude"
+                            />
+                          </Form.Item>
+                        </Col>
+                        <Col md={12}>
+                          <Form.Item
+                            name={`button-latitude-${cardIndex}-${index}`}
+                            label="Latitude"
+                            initialValue={btn.latitude}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Latitude is required",
+                              },
+                              {
+                                type: "number",
+                                min: -90,
+                                max: 90,
+                                message: "Latitude must be between -90 and 90",
+                              },
+                            ]}
+                          >
+                            <InputNumber
+                              size="small"
+                              style={{ width: "100%" }}
+                              value={btn.latitude}
+                              onChange={(value) =>
+                                handleChange(index, "latitude", value)
+                              }
+                              placeholder="Enter Latitude"
+                            />
+                          </Form.Item>
+                        </Col>
+                        <Col md={24}>
+                          <Form.Item
+                            name={`button-label-${cardIndex}-${index}`}
+                            label="Label"
+                            initialValue={btn.label}
+                            rules={[
+                              {
+                                required: true,
+                                type: "string",
+                                message: "Please enter label",
+                              },
+                            ]}
+                          >
+                            <Input
+                              size="small"
+                              value={btn.label}
+                              onChange={(e) =>
+                                handleChange(index, "label", e.target.value)
+                              }
+                              placeholder="Enter Label"
+                            />
+                          </Form.Item>
+                        </Col>
+                      </>
+                    )}
+                    {btn.type === "calendar" && (
+                      <>
+                        <Col md={12}>
+                          <Form.Item
+                            name={`button-startDate-${cardIndex}-${index}`}
+                            label="Start Date"
+                            initialValue={btn.startDate}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Start Date is required",
+                              },
+                            ]}
+                          >
+                            <DatePicker
+                              size="small"
+                              style={{ width: "100%" }}
+                              value={btn.startDate}
+                              onChange={(date) =>
+                                handleChange(index, "startDate", date)
+                              }
+                            />
+                          </Form.Item>
+                        </Col>
+                        <Col md={12}>
+                          <Form.Item
+                            name={`button-endDate-${cardIndex}-${index}`}
+                            label="End Date"
+                            initialValue={btn.endDate}
+                            rules={[
+                              {
+                                required: true,
+                                message: "End Date is required",
+                              },
+                              ({ getFieldValue }) => ({
+                                validator(_, value) {
+                                  if (
+                                    !value ||
+                                    value.isAfter(
+                                      getFieldValue(`button-startDate-${index}`)
+                                    )
+                                  ) {
+                                    return Promise.resolve();
+                                  }
+                                  return Promise.reject(
+                                    new Error(
+                                      "End Date must be after Start Date"
+                                    )
+                                  );
+                                },
+                              }),
+                            ]}
+                          >
+                            <DatePicker
+                              size="small"
+                              style={{ width: "100%" }}
+                              value={btn.endDate}
+                              onChange={(date) =>
+                                handleChange(index, "endDate", date)
+                              }
+                            />
+                          </Form.Item>
+                        </Col>
+                        <Col md={24}>
+                          <Form.Item
+                            name={`button-calender-${cardIndex}-${index}`}
+                            label="Label"
+                            rules={[
+                              {
+                                required: true,
+                                type: "string",
+                                message: "Please enter label",
+                              },
+                            ]}
+                            initialValue={btn.calender}
+                          >
+                            <Input
+                              size="small"
+                              value={btn.calender}
+                              onChange={(e) =>
+                                handleChange(index, "calender", e.target.value)
+                              }
+                              placeholder="Enter Label"
+                            />
+                          </Form.Item>
+                        </Col>
+                      </>
+                    )}
                   </Row>
                 </Form>
               )}

@@ -80,15 +80,15 @@ const MediaNodeSider = ({ selectedNode }) => {
         message.error(`You can only upload up to ${10} media items.`);
         return;
       }
-  
+
       if (file) {
         const url = URL.createObjectURL(file);
         const newMedia = { url, name: file.name };
-  
+
         // Update local state
         setMediaArray((prev) => {
           const updatedMediaArray = [...prev, newMedia];
-  
+
           // Update Redux store
           dispatch(
             setUpdateNodeData({
@@ -97,10 +97,10 @@ const MediaNodeSider = ({ selectedNode }) => {
               key: "mediaArray",
             })
           );
-  
+
           return updatedMediaArray;
         });
-  
+
         onSuccess({ url });
         message.success(`${file.name} uploaded successfully.`);
       } else {
@@ -187,6 +187,7 @@ const MediaNodeSider = ({ selectedNode }) => {
                 customRequest={handleMediaUpload}
                 showUploadList={false}
                 style={{ padding: 10 }}
+                multiple={true}
               >
                 {uploadButton}
               </Dragger>
