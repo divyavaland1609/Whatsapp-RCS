@@ -340,7 +340,7 @@ function RichCardCarouselSidebar({ selectedNode }) {
   );
 
   const handleAddCardsTemplate = () => {
-    if (options.length < 10) {
+    if (options.length < 5) {
       const newCard = {
         size: value,
         templateName: "",
@@ -368,7 +368,7 @@ function RichCardCarouselSidebar({ selectedNode }) {
         return { ...prev, cards: updatedCards };
       });
     } else {
-      message.warning("Cannot add more than 10 cards");
+      message.warning("Cannot add more than 5 cards");
     }
   };
 
@@ -376,7 +376,7 @@ function RichCardCarouselSidebar({ selectedNode }) {
     setRichCardCarousels((prev) => {
       const updatedCards = prev.cards.map((card, index) => {
         if (index === cardIndex) {
-          if (card.actions.length < 3) {
+          if (card.actions.length < 2) {
             const updatedActions = [
               ...card.actions,
               {
@@ -388,7 +388,7 @@ function RichCardCarouselSidebar({ selectedNode }) {
             ];
             return { ...card, actions: updatedActions };
           } else {
-            message.warning("Cannot add more than 3 buttons to a card");
+            message.warning("Cannot add more than 2 buttons to a card");
             return card;
           }
         }
@@ -401,10 +401,10 @@ function RichCardCarouselSidebar({ selectedNode }) {
         acc[`button-type-${cardIndex}-${i}`] = button.type ?? "";
         acc[`button-title-${cardIndex}-${i}`] = button.title ?? "";
         acc[`button-payload-${cardIndex}-${i}`] = button.payload ?? "";
-        acc[`button-phoneNumber-${cardIndex}-${i}`] = button.phoneNumber ?? "";
+        // acc[`button-phoneNumber-${cardIndex}-${i}`] = button.phoneNumber ?? "";
         acc[`button-url-${cardIndex}-${i}`] = button.url ?? "";
         acc[`button-label-${cardIndex}-${i}`] = button.label ?? "";
-        acc[`button-button-copy-code-${i}`] = button.copy;
+        // acc[`button-button-copy-code-${i}`] = button.copy;
         return acc;
       }, {});
       form.resetFields();
@@ -795,9 +795,9 @@ const quickReplyCount3 = Array.isArray(card)
                       icon={
                         <>
                           {btn?.type === "quick" && <MessageOutlined />}
-                          {btn?.type === "call" && <PhoneOutlined />}
+                          {/* {btn?.type === "call" && <PhoneOutlined />} */}
                           {btn?.type === "url" && <LinkOutlined />}
-                          {btn?.type === "copy-code" && <CopyOutlined />}
+                          {/* {btn?.type === "copy-code" && <CopyOutlined />} */}
                         </>
                       }
                     >
@@ -840,9 +840,9 @@ const quickReplyCount3 = Array.isArray(card)
                         icon={
                           <>
                             {btn?.type === "quick" && <MessageOutlined />}
-                            {btn?.type === "call" && <PhoneOutlined />}
+                            {/* {btn?.type === "call" && <PhoneOutlined />} */}
                             {btn?.type === "url" && <LinkOutlined />}
-                            {btn?.type === "copy-code" && <CopyOutlined />}
+                            {/* {btn?.type === "copy-code" && <CopyOutlined />} */}
                           </>
                         }
                       >
@@ -875,23 +875,23 @@ const quickReplyCount3 = Array.isArray(card)
                             {
                               value: "quick",
                               label: "Quick Reply",
-                              disabled: quickReplyCount >= 3, 
+                              disabled: quickReplyCount >= 2, 
                             },
-                            {
-                              value: "call",
-                              label: "Call Button",
-                              disabled: quickReplyCount1 >= 1, 
-                            },
+                            // {
+                            //   value: "call",
+                            //   label: "Call Button",
+                            //   disabled: quickReplyCount1 >= 1, 
+                            // },
                             {
                               value: "url",
                               label: "URL Button",
-                              disabled: quickReplyCount2 >= 1, 
+                              disabled: quickReplyCount2 >= 2, 
                             },
-                            {
-                              value: "copy-code",
-                              label: "Copy Code",
-                              disabled: quickReplyCount3 >= 1, 
-                            },
+                            // {
+                            //   value: "copy-code",
+                            //   label: "Copy Code",
+                            //   disabled: quickReplyCount3 >= 1, 
+                            // },
                           ]}
                         />
                       </Form.Item>
@@ -925,7 +925,7 @@ const quickReplyCount3 = Array.isArray(card)
                         />
                       </Form.Item>
                     </Col>
-                    {btn.type === "call" && (
+                    {/* {btn.type === "call" && (
                       <Col md={24}>
                         <Form.Item
                           name={`button-phoneNumber-${cardIndex}-${index}`}
@@ -973,7 +973,7 @@ const quickReplyCount3 = Array.isArray(card)
                           />
                         </Form.Item>
                       </Col>
-                    )}
+                    )} */}
                     {btn.type === "url" && (
                       <Col md={24}>
                         <Form.Item

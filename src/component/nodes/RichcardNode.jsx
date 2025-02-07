@@ -628,7 +628,7 @@ function RichcardNode({ data, selected }) {
                     )}
                     {btn.type === "copy-code" && (
                       <Typography.Text>
-                        <CopyOutlined /> {btn?.title}
+                        <CopyOutlined /> {btn?.copy}
                       </Typography.Text>
                     )}
                   </Button>

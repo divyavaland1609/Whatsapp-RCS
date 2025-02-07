@@ -127,6 +127,7 @@ function RichcardNodeSidebar({ selectedNode }) {
         acc[`button-url-${i}`] = button.url;
         acc[`button-label-${i}`] = button.label;
         acc[`button-button-copy-code-${i}`] = button.copy;
+        acc[`button-copy-${i}`] = button.copy;
 
         return acc;
       }, {});
@@ -167,7 +168,7 @@ function RichcardNodeSidebar({ selectedNode }) {
   ).length;
 
   const addNewCard = () => {
-    if (data.actions.length < 3) {
+    if (data.actions.length < 7) {
       setData((prev) => {
         const value = {
           ...prev,
@@ -200,7 +201,7 @@ function RichcardNodeSidebar({ selectedNode }) {
         return value;
       });
     } else {
-      message.warning("Cannot add more than 3 buttons");
+      message.warning("Cannot add more than 7 buttons");
     }
   };
   const deleteCard = (index) => {
@@ -564,7 +565,7 @@ function RichcardNodeSidebar({ selectedNode }) {
                               {
                                 value: "url",
                                 label: "URL Button",
-                                disabled: quickReplyCount2 >= 1,
+                                disabled: quickReplyCount2 >= 3,
                               },
                               {
                                 value: "copy-code",
@@ -596,6 +597,7 @@ function RichcardNodeSidebar({ selectedNode }) {
                             size="small"
                             style={{ fontSize: "15px" }}
                             value={action.title}
+                            disabled={action?.type === "copy-code"}
                             onChange={(e) =>
                               handleChange(index, "title", e.target.value)
                             }
@@ -716,6 +718,48 @@ function RichcardNodeSidebar({ selectedNode }) {
                           ></Form.Item>
                         </Col>
                       )} */}
+
+                      {action.type === "copy-code" && (
+                        <Col md={24}>
+                          {/* <Form.Item
+                                                name={`button-copy-code-${index}`}
+                                                // label="URL"
+                                                initialValue={action.payload}
+                                                rules={[
+                                                  {
+                                                    required: true,
+                                                    message: "Copy Code is required",
+                                                  },
+                                                  {
+                                                    type: "copy-code",
+                                                    message: "Enter a valid Copy Code",
+                                                  },
+                                                ]}
+                                              ></Form.Item> */}
+                          <Form.Item
+                            name={`button-copy-${index}`}
+                            label="Coupon Copy Code"
+                            rules={[
+                              {
+                                required: true,
+                                message: "Please enter a copy code",
+                              },
+                            ]}
+                          >
+                            <Input
+                              size="small"
+                              style={{ fontSize: "15px" }}
+                              value={action.copy}
+                              onChange={(e) =>
+                                handleChange(index, "copy", e.target.value)
+                              }
+                              placeholder="Enter Coupon Code to Copy"
+                              maxLength={15}
+                            />
+                          </Form.Item>
+                        </Col>
+                      )}
+                      {action.type === "copy-code" && <></>}
                     </Row>
                   </Form>
                 )}
