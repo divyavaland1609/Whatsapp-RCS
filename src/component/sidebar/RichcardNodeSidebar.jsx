@@ -43,14 +43,15 @@ function RichcardNodeSidebar({ selectedNode }) {
   const alldata = nodes.find((item) => item.id === selectedNode);
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState(alldata?.data?.mediaUrl ?? "");
-  const [value, setValue] = useState(alldata?.data?.size ?? "medium");
+  const [value, setValue] = useState(alldata?.data?.size ?? "image");
   const [editingCardId, setEditingCardId] = useState(null);
-
   const [templateName, setTemplateName] = useState(
     alldata?.data?.templateName ?? "Rich Card"
   );
   const [messagename, setMessageName] = useState(alldata?.data?.label ?? "");
-
+  const [footerTitle, setFooterTitle] = useState(
+    alldata?.data?.footerTitle ?? ""
+  );
   const [description, setDescription] = useState(
     alldata?.data?.description ?? ""
   );
@@ -91,6 +92,13 @@ function RichcardNodeSidebar({ selectedNode }) {
     const description = value;
     setDescription(description);
     const data = { selectedNode, value, key: "description" };
+    dispatch(setRichCardNodeData(data));
+  };
+
+  const handleFooterTitleChange = (e) => {
+    const value = e.target.value;
+    setFooterTitle(value);
+    const data = { selectedNode, value, key: "footerTitle" };
     dispatch(setRichCardNodeData(data));
   };
 
@@ -137,11 +145,18 @@ function RichcardNodeSidebar({ selectedNode }) {
     }
   }, [selectedNode]);
 
-  const onChange = (value) => {
-    setValue(value);
-    const data = { selectedNode, value, key: "size" };
+
+  const onChange = (selectedValue) => {
+    setValue(selectedValue);
+    const data = { selectedNode, value: selectedValue, key: "size" };
     dispatch(setRichCardNodeData(data));
   };
+
+  // const onChange = (value) => {
+  //   setValue(value);
+  //   const data = { selectedNode, value, key: "size" };
+  //   dispatch(setRichCardNodeData(data));
+  // };
 
   const handleChange = (index, key, val) => {
     setData((prev) => {
@@ -281,15 +296,19 @@ function RichcardNodeSidebar({ selectedNode }) {
     },
   };
 
+
   const customUpload = ({ file, onSuccess, onError }) => {
     try {
       const fileType = file.type;
-      if (
-        !["image/png", "image/jpeg", "video/mp4", "application/pdf"].includes(
-          fileType
-        )
-      ) {
-        onError("Unsupported file format");
+      const allowedTypes = {
+        image: ["image/png", "image/jpeg"],
+        video: ["video/mp4"],
+        document: ["application/pdf"],
+      };
+
+      if (!allowedTypes[value]?.includes(fileType)) {
+        onError("Invalid file type. Please upload the correct format.");
+        message.error("Invalid file type. Please upload a " + value);
         return;
       }
 
@@ -302,6 +321,29 @@ function RichcardNodeSidebar({ selectedNode }) {
       onError(error);
     }
   };
+
+
+  // const customUpload = ({ file, onSuccess, onError }) => {
+  //   try {
+  //     const fileType = file.type;
+  //     if (
+  //       !["image/png", "image/jpeg", "video/mp4", "application/pdf"].includes(
+  //         fileType
+  //       )
+  //     ) {
+  //       onError("Unsupported file format");
+  //       return;
+  //     }
+
+  //     // Simulate the upload process
+  //     setTimeout(() => {
+  //       const fileUrl = URL.createObjectURL(file);
+  //       onSuccess({ url: fileUrl });
+  //     }, 1000);
+  //   } catch (error) {
+  //     onError(error);
+  //   }
+  // };
 
   const handleEditToggle = (id) => {
     setEditingCardId(editingCardId === id ? null : id);
@@ -380,11 +422,22 @@ function RichcardNodeSidebar({ selectedNode }) {
                 style={{ width: 120 }}
                 onChange={onChange}
                 options={[
+                  { value: "image", label: "Image" },
+                  { value: "video", label: "Video" },
+                  { value: "document", label: "Document" },
+                ]}
+              />
+              {/* <Select
+                size="small"
+                value={value}
+                style={{ width: 120 }}
+                onChange={onChange}
+                options={[
                   { value: "short", label: "Short" },
                   { value: "medium", label: "Medium" },
                   { value: "tall", label: "Tall" },
                 ]}
-              />
+              /> */}
             </Col>
           </Row>
 
@@ -397,8 +450,7 @@ function RichcardNodeSidebar({ selectedNode }) {
                 style={{ padding: 10 }}
               >
                 {imageUrl
-                  ? 
-                  (() => {
+                  ? (() => {
                       const mediaUrl = imageUrl.response?.url || imageUrl;
                       const fileType = imageUrl.type;
 
@@ -508,6 +560,29 @@ function RichcardNodeSidebar({ selectedNode }) {
               onChange={(value) => handleDescriptionNameChange(value)}
             />
           </Form.Item>
+
+          <Form.Item
+            name="footer Title"
+            label="Footer Title"
+            value={footerTitle}
+            // initialValue={btn.payload}
+            rules={[
+              {
+                required: true,
+                message: "Footer Title is required",
+              },
+            ]}
+          >
+            <Input
+              size="small"
+              required={true}
+              // addonBefore={selectBefore}
+              // value={btn.payload}
+              onChange={handleFooterTitleChange}
+              placeholder="Enter Footer Title"
+            />
+          </Form.Item>
+
           <Flex justify="space-between">
             <Typography.Text>Buttons</Typography.Text>
             {/* <Form.Item label="" /> */}

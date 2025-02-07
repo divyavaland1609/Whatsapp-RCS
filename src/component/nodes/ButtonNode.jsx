@@ -72,28 +72,28 @@ const ButtonNode = ({ data, selected }) => {
     );
   };
 
-
-
   const reactFlowInstance = useReactFlow();
 
   useEffect(() => {
-   const buttonActions = alldata?.data?.actions || [];
-   const handleId = new Set(
-     buttonActions
-       .map((action, index) => (action.type === "quick" ? `handle-${index}` : null))
-       .filter(Boolean)
-   );
+    const buttonActions = alldata?.data?.actions || [];
+    const handleId = new Set(
+      buttonActions
+        .map((action, index) =>
+          action.type === "quick" ? `handle-${index}` : null
+        )
+        .filter(Boolean)
+    );
 
-   reactFlowInstance.setEdges((prevEdges) =>
-     prevEdges.filter((edge) => {
-       return (
-         edge.source !== id ||
-         !edge.sourceHandle ||
-         handleId.has(edge.sourceHandle)
-       );
-     })
-   );
- }, [alldata?.data?.actions, reactFlowInstance, id]);
+    reactFlowInstance.setEdges((prevEdges) =>
+      prevEdges.filter((edge) => {
+        return (
+          edge.source !== id ||
+          !edge.sourceHandle ||
+          handleId.has(edge.sourceHandle)
+        );
+      })
+    );
+  }, [alldata?.data?.actions, reactFlowInstance, id]);
 
   const connected = isNodeConnected(id);
 
@@ -387,7 +387,7 @@ const ButtonNode = ({ data, selected }) => {
             className="inverted-border-radius  shadow-pink"
             style={{ paddingTop: "1px 1px 1px" }}
           >
-            <Flex className="flex-grow" align="center" justify="space-between" >
+            <Flex className="flex-grow" align="center" justify="space-between">
               <Typography className="title-name">
                 {alldata?.data?.templateName ?? "Text with Button"}
               </Typography>
@@ -467,7 +467,15 @@ const ButtonNode = ({ data, selected }) => {
                 }}
               ></small>
             </Paragraph>
-
+            <Paragraph
+              type="secondary"
+              style={{
+                padding: "0px 10px",
+                // padding: "8px",
+              }}
+            >
+              <small>{alldata?.data?.footerTitle || "footer Title"}</small>
+            </Paragraph>
             {alldata?.data?.actions?.length > 0 ? (
               alldata.data.actions.map((btn, i) => (
                 <React.Fragment key={i}>

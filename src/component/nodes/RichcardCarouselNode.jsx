@@ -525,12 +525,12 @@ function RichcardCarouselNode({ data, selected }) {
                                       : card?.size === "tall"
                                       ? "150px"
                                       : "120px",
-                                      width:
-                                      alldata?.data?.cardWidth === 1
-                                        ? "230.4px"
-                                        : alldata?.data?.cardWidth === 0
-                                        ? "172.8px"
-                                        : "172.8px",
+                                  width:
+                                    alldata?.data?.cardWidth === 1
+                                      ? "230.4px"
+                                      : alldata?.data?.cardWidth === 0
+                                      ? "172.8px"
+                                      : "172.8px",
                                 }}
                                 src={mediaUrl}
                                 alt="Media not found"
@@ -629,6 +629,17 @@ function RichcardCarouselNode({ data, selected }) {
                               " Card description",
                           }}
                         ></small>
+                      </Paragraph>
+                      <Paragraph
+                        type="secondary"
+                        style={{
+                          padding: "0px 7px",
+                          // padding: "8px",
+                        }}
+                      >
+                        <small>
+                          {alldata?.data?.footerTitle || "footer Title"}
+                        </small>
                       </Paragraph>
                     </div>
                     <div

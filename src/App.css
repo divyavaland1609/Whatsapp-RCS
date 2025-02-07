@@ -645,3 +645,14 @@ div:where(.css-dev-only-do-not-override-1nt0t97).ant-typography, :where(.css-dev
   align-items: baseline;
 }
 
+div:where(.css-dev-only-do-not-override-e39swc).ant-typography, :where(.css-dev-only-do-not-override-e39swc).ant-typography p {
+  margin-bottom: 0em;
+}
+
+div:where(.css-dev-only-do-not-override-qkie4x).ant-typography, :where(.css-dev-only-do-not-override-qkie4x).ant-typography p {
+  margin-bottom: 0em;
+}
+
+div:where(.css-dev-only-do-not-override-1gdm7ct).ant-typography, :where(.css-dev-only-do-not-override-1gdm7ct).ant-typography p {
+  margin-bottom: 0em;
+}

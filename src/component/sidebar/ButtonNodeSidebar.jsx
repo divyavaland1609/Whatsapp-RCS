@@ -43,6 +43,9 @@ const ButtonNodeSidebar = ({ selectedNode }) => {
   const [templateName, setTemplateName] = useState(
     alldata?.data?.templateName ?? "Text with Button"
   );
+  const [footerTitle, setFooterTitle] = useState(
+    alldata?.data?.footerTitle ?? ""
+  );
   const [editingCardId, setEditingCardId] = useState(null);
   const [message1, setMessage] = useState(alldata?.data?.label ?? "");
   const [data, setData] = useState({
@@ -77,6 +80,13 @@ const ButtonNodeSidebar = ({ selectedNode }) => {
     const value = e.target.value;
     setTemplateName(value);
     const data = { selectedNode, value, key: "templateName" };
+    dispatch(setUpdateNodeData(data));
+  };
+
+  const handleFooterTitleChange = (e) => {
+    const value = e.target.value;
+    setFooterTitle(value);
+    const data = { selectedNode, value, key: "footerTitle" };
     dispatch(setUpdateNodeData(data));
   };
 
@@ -392,6 +402,29 @@ const ButtonNodeSidebar = ({ selectedNode }) => {
             onChange={(value) => handleMessageNameChange(value)}
           />
         </Form.Item>
+
+        <Form.Item
+          name="footer Title"
+          label="Footer Title"
+          value={footerTitle}
+          // initialValue={btn.payload}
+          rules={[
+            {
+              required: true,
+              message: "Footer Title is required",
+            },
+          ]}
+        >
+          <Input
+            size="small"
+            required={true}
+            // addonBefore={selectBefore}
+            // value={btn.payload}
+            onChange={handleFooterTitleChange}
+            placeholder="Enter Footer Title"
+          />
+        </Form.Item>
+
         <Flex justify="space-between" align="center">
           <Typography.Text>Buttons</Typography.Text>
           {/* <Form.Item label="Buttons" /> */}
@@ -638,7 +671,7 @@ const ButtonNodeSidebar = ({ selectedNode }) => {
                         </Form.Item>
                       </Col>
                     )}
-                         {action.type === "copy-code" && <></>}
+                    {action.type === "copy-code" && <></>}
                   </Row>
                 </Form>
               )}

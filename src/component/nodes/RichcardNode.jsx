@@ -633,6 +633,19 @@ function RichcardNode({ data, selected }) {
                   }}
                 ></small>
               </Paragraph>
+
+              <Paragraph
+                type="secondary"
+                style={{
+                  padding: "0px 7px",
+                  // padding: "8px",
+                }}
+              >
+                <small>{alldata?.data?.footerTitle || "footer Title"}</small>
+              </Paragraph>
+
+
+
               {/* <Paragraph
                 style={{
                   lineHeight: "1.00",
