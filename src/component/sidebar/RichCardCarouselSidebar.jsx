@@ -53,6 +53,9 @@ function RichCardCarouselSidebar({ selectedNode }) {
     [selectedNode, nodes]
   );
   const [cardIndex, setCardIndex] = useState(0);
+  const [footerTitle, setFooterTitle] = useState(
+    alldata?.data?.footerTitle ?? ""
+  );
   const [loading, setLoading] = useState(false);
   const [options, setOptions] = useState(
     alldata?.data?.richCardCarousels?.cards ?? [
@@ -109,7 +112,7 @@ function RichCardCarouselSidebar({ selectedNode }) {
   });
 
   const [previewImage, setPreviewImage] = useState([]);
-  const [value, setValue] = useState(alldata?.data?.value ?? "medium");
+  const [value, setValue] = useState(alldata?.data?.value ?? "image");
   const [templateName, setTemplateName] = useState(
     alldata?.data?.templateName || "Rich Card Carousle"
   );
@@ -268,12 +271,15 @@ function RichCardCarouselSidebar({ selectedNode }) {
   const customUpload = ({ file, onSuccess, onError }) => {
     try {
       const fileType = file.type;
-      if (
-        !["image/png", "image/jpeg", "video/mp4"].includes(
-          fileType
-        )
-      ) {
-        onError("Unsupported file format");
+      const allowedTypes = {
+        image: ["image/png", "image/jpeg"],
+        video: ["video/mp4"],
+        document: ["application/pdf", "application/msword"],
+      };
+
+      if (!allowedTypes[value].includes(fileType)) {
+        onError("Unsupported file format. Please upload a valid file.");
+        message.error(`Invalid file type! Please upload a ${value} file.`);
         return;
       }
 
@@ -281,12 +287,32 @@ function RichCardCarouselSidebar({ selectedNode }) {
       setTimeout(() => {
         const fileUrl = URL.createObjectURL(file);
         onSuccess({ url: fileUrl }); // On success, return the file URL
+        message.success("File uploaded successfully!");
       }, 1000);
     } catch (error) {
       console.error("Upload failed:", error);
       onError(error);
     }
   };
+
+  // const customUpload = ({ file, onSuccess, onError }) => {
+  //   try {
+  //     const fileType = file.type;
+  //     if (!["image/png", "image/jpeg", "video/mp4"].includes(fileType)) {
+  //       onError("Unsupported file format");
+  //       return;
+  //     }
+
+  //     // Simulating the upload process (replace with real upload logic)
+  //     setTimeout(() => {
+  //       const fileUrl = URL.createObjectURL(file);
+  //       onSuccess({ url: fileUrl }); // On success, return the file URL
+  //     }, 1000);
+  //   } catch (error) {
+  //     console.error("Upload failed:", error);
+  //     onError(error);
+  //   }
+  // };
 
   const props = {
     name: "file",
@@ -352,13 +378,19 @@ function RichCardCarouselSidebar({ selectedNode }) {
     });
   };
 
-  const onChange = (value, index, key) => {
-    const newSize = value;
-    setValue(newSize);
+  const handleFooterTitleChange = (e) => {
+    const value = e.target.value;
+    setFooterTitle(value);
+    const data = { selectedNode, value, key: "footerTitle" };
+    dispatch(setRichCardNodeCarousleData(data));
+  };
+
+  const onChange = (selectedValue, index, key) => {
+    setValue(selectedValue); // Update selected type
 
     setRichCardCarousels((prev) => {
       const updatedCards = prev.cards.map((card, i) =>
-        i === index ? { ...card, [key]: newSize } : card
+        i === index ? { ...card, [key]: selectedValue } : card
       );
 
       const value = { ...prev, cards: updatedCards };
@@ -369,6 +401,24 @@ function RichCardCarouselSidebar({ selectedNode }) {
       return { ...prev, cards: updatedCards };
     });
   };
+
+  // const onChange = (value, index, key) => {
+  //   const newSize = value;
+  //   setValue(newSize);
+
+  //   setRichCardCarousels((prev) => {
+  //     const updatedCards = prev.cards.map((card, i) =>
+  //       i === index ? { ...card, [key]: newSize } : card
+  //     );
+
+  //     const value = { ...prev, cards: updatedCards };
+  //     const data = { selectedNode, value, key: "richCardCarousels" };
+
+  //     dispatch(setUpdateNodeData(data));
+
+  //     return { ...prev, cards: updatedCards };
+  //   });
+  // };
 
   const handleDescriptionNameChange = (value, index, key) => {
     const newDescriptionName = value;
@@ -677,7 +727,7 @@ function RichCardCarouselSidebar({ selectedNode }) {
               </Badge.Ribbon>
             </Col>
           </Row>
-          <Form.Item
+          {/* <Form.Item
             name={"rich_card_carousel_width"}
             label="Width"
             rules={[{ required: true, message: "Width is required" }]}
@@ -706,7 +756,7 @@ function RichCardCarouselSidebar({ selectedNode }) {
                 </Row>
               </div>
             </Radio.Group>
-          </Form.Item>
+          </Form.Item> */}
           <Row>
             <Col md={24}>
               <Flex
@@ -758,13 +808,24 @@ function RichCardCarouselSidebar({ selectedNode }) {
                 size="small"
                 value={value}
                 style={{ width: 120 }}
+                onChange={(val) => onChange(val, 0, "fileType")}
+                options={[
+                  { value: "image", label: "Image" },
+                  { value: "video", label: "Video" },
+                  { value: "document", label: "Document" },
+                ]}
+              />
+              {/* <Select
+                size="small"
+                value={value}
+                style={{ width: 120 }}
                 onChange={(value) => onChange(value, cardIndex, "size")}
                 options={[
                   { value: "short", label: "Short" },
                   { value: "medium", label: "Medium" },
                   { value: "tall", label: "Tall" },
                 ]}
-              />
+              /> */}
             </Col>
           </Row>
           <Row align="middle" justify="space-evenly">
@@ -798,7 +859,7 @@ function RichCardCarouselSidebar({ selectedNode }) {
                           />
                         );
                       }
-                     
+
                       return null;
                     })()}
                   </>
@@ -850,6 +911,27 @@ function RichCardCarouselSidebar({ selectedNode }) {
               onChange={(value) =>
                 handleDescriptionNameChange(value, cardIndex, "description")
               }
+            />
+          </Form.Item>
+          <Form.Item
+            name="footer Title"
+            label="Footer Title"
+            value={footerTitle}
+            // initialValue={btn.payload}
+            rules={[
+              {
+                required: true,
+                message: "Footer Title is required",
+              },
+            ]}
+          >
+            <Input
+              size="small"
+              required={true}
+              // addonBefore={selectBefore}
+              // value={btn.payload}
+              onChange={handleFooterTitleChange}
+              placeholder="Enter Footer Title"
             />
           </Form.Item>
 
@@ -967,22 +1049,22 @@ function RichCardCarouselSidebar({ selectedNode }) {
                             {
                               value: "quick",
                               label: "Quick Reply",
-                              disabled: quickReplyCount >= 2, 
+                              disabled: quickReplyCount >= 2,
                             },
                             // {
                             //   value: "call",
                             //   label: "Call Button",
-                            //   disabled: quickReplyCount1 >= 1, 
+                            //   disabled: quickReplyCount1 >= 1,
                             // },
                             {
                               value: "url",
                               label: "URL Button",
-                              disabled: quickReplyCount2 >= 2, 
+                              disabled: quickReplyCount2 >= 2,
                             },
                             // {
                             //   value: "copy-code",
                             //   label: "Copy Code",
-                            //   disabled: quickReplyCount3 >= 1, 
+                            //   disabled: quickReplyCount3 >= 1,
                             // },
                           ]}
                         />

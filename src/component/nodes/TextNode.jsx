@@ -474,16 +474,16 @@ const TextNode = ({ data, selected }) => {
     const edgesofCurentNode = edges
       .filter((edge) => edge.target === id)
       .map((item) => item.source);
-    const currentEdges = [... new Set(edgesofCurentNode)]
-      
+    const currentEdges = [...new Set(edgesofCurentNode)];
+
     const disabledNodes = nodes
       ?.filter((node) => node.data.disabled === true)
       ?.filter((node) => currentEdges.includes(node.id));
 
-      // console.log("isConnected", disabledNodes,currentEdges);
+    // console.log("isConnected", disabledNodes,currentEdges);
 
     return disabledNodes.length === currentEdges.length &&
-    currentEdges.length > 0
+      currentEdges.length > 0
       ? true
       : false;
   };
@@ -598,12 +598,14 @@ const TextNode = ({ data, selected }) => {
         onMouseLeave={() => setIsHovered(false)}
       >
         <Card
-          styles={{body:{
-            padding: "0px",
-            borderRadius: "14px",
-            boxShadow: "0px -10px 15px rgba(0, 0, 0, 0.2)",
-            margin: "0px -1px 0px -1px",
-          }}}
+          styles={{
+            body: {
+              padding: "0px",
+              borderRadius: "14px",
+              boxShadow: "0px -10px 15px rgba(0, 0, 0, 0.2)",
+              margin: "0px -1px 0px -1px",
+            },
+          }}
           style={{
             width: 203,
             padding: "-1px",
@@ -618,7 +620,12 @@ const TextNode = ({ data, selected }) => {
           }}
         >
           <div className="inverted-border-radius shadow-blue">
-            <Flex className="flex-grow" align="center" justify="space-between"  style={{padding:"5px"}}>
+            <Flex
+              className="flex-grow"
+              align="center"
+              justify="space-between"
+              style={{ padding: "5px" }}
+            >
               <Typography
                 className="title-name"
                 style={{ marginBottom: "7px" }}
@@ -707,7 +714,17 @@ const TextNode = ({ data, selected }) => {
                 }}
               />
             </Paragraph>
+          
           </div>
+          <Paragraph
+            type="secondary"
+            style={{
+              padding: "0px 10px",
+              // padding: "8px",
+            }}
+          >
+            <small>{alldata?.data?.footerTitle || "footer Title"}</small>
+          </Paragraph>
         </Card>
       </div>
     </ConfigProvider>

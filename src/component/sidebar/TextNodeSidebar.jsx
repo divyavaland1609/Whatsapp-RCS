@@ -15,6 +15,9 @@ const TextNodeSidebar = ({ setSelectedNode, title, selectedNode }) => {
   const [imageUrl, setImageUrl] = useState(alldata?.data?.mediaUrl ?? "");
   const [message1, setMessage] = useState(alldata?.data?.label ?? "");
   const [isEditing, setIsEditing] = useState(false);
+  const [footerTitle, setFooterTitle] = useState(
+    alldata?.data?.footerTitle ?? ""
+  );
   console.log(alldata, "data");
 
   const inputRef = useRef(null);
@@ -47,6 +50,13 @@ const TextNodeSidebar = ({ setSelectedNode, title, selectedNode }) => {
     const MessageName = value;
     setMessage(MessageName);
     const data = { selectedNode, value, key: "label" };
+    dispatch(setUpdateNodeData(data));
+  };
+
+  const handleFooterTitleChange = (e) => {
+    const value = e.target.value;
+    setFooterTitle(value);
+    const data = { selectedNode, value, key: "footerTitle" };
     dispatch(setUpdateNodeData(data));
   };
 
@@ -119,6 +129,27 @@ const TextNodeSidebar = ({ setSelectedNode, title, selectedNode }) => {
                 setMessage(value);
                 handleMessageNameChange(value);
               }}
+            />
+          </Form.Item>
+          <Form.Item
+            name="footer Title"
+            label="Footer Title"
+            value={footerTitle}
+            // initialValue={btn.payload}
+            rules={[
+              {
+                required: true,
+                message: "Footer Title is required",
+              },
+            ]}
+          >
+            <Input
+              size="small"
+              required={true}
+              // addonBefore={selectBefore}
+              // value={btn.payload}
+              onChange={handleFooterTitleChange}
+              placeholder="Enter Footer Title"
             />
           </Form.Item>
         </Form>

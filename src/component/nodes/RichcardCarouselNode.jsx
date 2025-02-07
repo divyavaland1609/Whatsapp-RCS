@@ -525,12 +525,12 @@ function RichcardCarouselNode({ data, selected }) {
                                       : card?.size === "tall"
                                       ? "150px"
                                       : "120px",
-                                      width:
-                                      alldata?.data?.cardWidth === 1
-                                        ? "230.4px"
-                                        : alldata?.data?.cardWidth === 0
-                                        ? "172.8px"
-                                        : "172.8px",
+                                  width:
+                                    alldata?.data?.cardWidth === 1
+                                      ? "230.4px"
+                                      : alldata?.data?.cardWidth === 0
+                                      ? "172.8px"
+                                      : "172.8px",
                                 }}
                                 src={mediaUrl}
                                 alt="Media not found"
@@ -585,8 +585,14 @@ function RichcardCarouselNode({ data, selected }) {
                           preview={false}
                           alt="example"
                           src={
-                            "https://medcities.org/wp-content/uploads/2021/05/generic_image_medcities-1.jpg"
-                          }
+                            alldata?.data?.type === "image"
+                             ? "https://medcities.org/wp-content/uploads/2021/05/generic_image_medcities-1.jpg"
+                             : alldata?.data?.type === "video"
+                             ? "https://www.openaire.eu/components/com_easyblog/themes/wireframe/images/placeholder-video.png"
+                             : alldata?.data?.type === "document"
+                             ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0iHXcwKuDP2PpsQvqkETZ7Q40pZpKUmOl6HFvRUtVLnqeBB60feXVfzz-9s6k_uvYKek&usqp=CAU"
+                             : "https://medcities.org/wp-content/uploads/2021/05/generic_image_medcities-1.jpg" // Fallback default
+                         }
                         />
                       )}
 
@@ -629,6 +635,17 @@ function RichcardCarouselNode({ data, selected }) {
                               " Card description",
                           }}
                         ></small>
+                      </Paragraph>
+                      <Paragraph
+                        type="secondary"
+                        style={{
+                          padding: "0px 7px",
+                          // padding: "8px",
+                        }}
+                      >
+                        <small>
+                          {alldata?.data?.footerTitle || "footer Title"}
+                        </small>
                       </Paragraph>
                     </div>
                     <div
