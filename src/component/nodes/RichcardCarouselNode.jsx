@@ -319,6 +319,8 @@ function RichcardCarouselNode({ data, selected }) {
     );
   };
   const connected = isNodeConnected(id);
+  console.log("alldata-->",alldata);
+  
   return (
     <ConfigProvider
       theme={{
@@ -585,11 +587,11 @@ function RichcardCarouselNode({ data, selected }) {
                           preview={false}
                           alt="example"
                           src={
-                            alldata?.data?.type === "image"
+                            card?.fileType === "image"
                              ? "https://medcities.org/wp-content/uploads/2021/05/generic_image_medcities-1.jpg"
-                             : alldata?.data?.type === "video"
+                             : card?.fileType === "video"
                              ? "https://www.openaire.eu/components/com_easyblog/themes/wireframe/images/placeholder-video.png"
-                             : alldata?.data?.type === "document"
+                             : card?.fileType === "document"
                              ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0iHXcwKuDP2PpsQvqkETZ7Q40pZpKUmOl6HFvRUtVLnqeBB60feXVfzz-9s6k_uvYKek&usqp=CAU"
                              : "https://medcities.org/wp-content/uploads/2021/05/generic_image_medcities-1.jpg" // Fallback default
                          }

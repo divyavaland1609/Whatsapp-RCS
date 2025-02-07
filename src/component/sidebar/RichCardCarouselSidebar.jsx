@@ -112,7 +112,7 @@ function RichCardCarouselSidebar({ selectedNode }) {
   });
 
   const [previewImage, setPreviewImage] = useState([]);
-  const [value, setValue] = useState(alldata?.data?.value ?? "image");
+  const [value, setValue] = useState(alldata?.data?.richCardCarousels?.cards[cardIndex]?.fileType || "image");
   const [templateName, setTemplateName] = useState(
     alldata?.data?.templateName || "Rich Card Carousle"
   );
@@ -386,21 +386,20 @@ function RichCardCarouselSidebar({ selectedNode }) {
   };
 
   const onChange = (selectedValue, index, key) => {
-    setValue(selectedValue); // Update selected type
-
+    setValue(selectedValue);
     setRichCardCarousels((prev) => {
       const updatedCards = prev.cards.map((card, i) =>
         i === index ? { ...card, [key]: selectedValue } : card
       );
-
+  
       const value = { ...prev, cards: updatedCards };
       const data = { selectedNode, value, key: "richCardCarousels" };
-
+  
       dispatch(setUpdateNodeData(data));
-
       return { ...prev, cards: updatedCards };
     });
   };
+  
 
   // const onChange = (value, index, key) => {
   //   const newSize = value;
@@ -806,9 +805,10 @@ function RichCardCarouselSidebar({ selectedNode }) {
             <Col>
               <Select
                 size="small"
-                value={value}
+                value={alldata?.data?.richCardCarousels?.cards[cardIndex]?.fileType || "image"}
+                // defaultValue={value}
                 style={{ width: 120 }}
-                onChange={(val) => onChange(val, 0, "fileType")}
+                onChange={(value) => onChange(value, cardIndex, "fileType")}
                 options={[
                   { value: "image", label: "Image" },
                   { value: "video", label: "Video" },
