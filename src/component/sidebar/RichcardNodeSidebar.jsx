@@ -148,10 +148,11 @@ function RichcardNodeSidebar({ selectedNode }) {
 
   const onChange = (selectedValue) => {
     setValue(selectedValue);
-    const data = { selectedNode, value: selectedValue, key: "size" };
+    const data = { selectedNode, value: selectedValue, key: "type" };
     dispatch(setRichCardNodeData(data));
   };
 
+  console.log("alldata",alldata)
   // const onChange = (value) => {
   //   setValue(value);
   //   const data = { selectedNode, value, key: "size" };

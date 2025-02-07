@@ -542,7 +542,13 @@ function RichcardNode({ data, selected }) {
                   width: "200px",
                 }}
                 src={
-                  "https://medcities.org/wp-content/uploads/2021/05/generic_image_medcities-1.jpg"
+                   alldata?.data?.type === "image"
+                    ? "https://medcities.org/wp-content/uploads/2021/05/generic_image_medcities-1.jpg"
+                    : alldata?.data?.type === "video"
+                    ? "https://www.openaire.eu/components/com_easyblog/themes/wireframe/images/placeholder-video.png"
+                    : alldata?.data?.type === "document"
+                    ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0iHXcwKuDP2PpsQvqkETZ7Q40pZpKUmOl6HFvRUtVLnqeBB60feXVfzz-9s6k_uvYKek&usqp=CAU"
+                    : "https://medcities.org/wp-content/uploads/2021/05/generic_image_medcities-1.jpg" // Fallback default
                 }
                 alt="Media not found"
                 preview={false}
@@ -809,6 +815,7 @@ function RichcardNode({ data, selected }) {
               </Button>
             )}
           </div>
+          
         </Card>
       </div>
     </ConfigProvider>
