@@ -448,7 +448,7 @@ function RichCardCarouselSidebar({ selectedNode }) {
   );
 
   const handleAddCardsTemplate = () => {
-    if (options.length < 10) {
+    if (options.length < 5) {
       const newCard = {
         size: value,
         templateName: "",
@@ -476,7 +476,7 @@ function RichCardCarouselSidebar({ selectedNode }) {
         return { ...prev, cards: updatedCards };
       });
     } else {
-      message.warning("Cannot add more than 10 cards");
+      message.warning("Cannot add more than 5 cards");
     }
   };
 
@@ -484,7 +484,7 @@ function RichCardCarouselSidebar({ selectedNode }) {
     setRichCardCarousels((prev) => {
       const updatedCards = prev.cards.map((card, index) => {
         if (index === cardIndex) {
-          if (card.actions.length < 4) {
+          if (card.actions.length < 2) {
             const updatedActions = [
               ...card.actions,
               {
@@ -496,7 +496,7 @@ function RichCardCarouselSidebar({ selectedNode }) {
             ];
             return { ...card, actions: updatedActions };
           } else {
-            message.warning("Cannot add more than 4 buttons to a card");
+            message.warning("Cannot add more than 2 buttons to a card");
             return card;
           }
         }
@@ -508,14 +508,10 @@ function RichCardCarouselSidebar({ selectedNode }) {
         acc[`button-type-${cardIndex}-${i}`] = button.type ?? "";
         acc[`button-title-${cardIndex}-${i}`] = button.title ?? "";
         acc[`button-payload-${cardIndex}-${i}`] = button.payload ?? "";
-        acc[`button-phoneNumber-${cardIndex}-${i}`] = button.phoneNumber ?? "";
+        // acc[`button-phoneNumber-${cardIndex}-${i}`] = button.phoneNumber ?? "";
         acc[`button-url-${cardIndex}-${i}`] = button.url ?? "";
         acc[`button-label-${cardIndex}-${i}`] = button.label ?? "";
-        acc[`button-latitude-${cardIndex}-${i}`] = button.latitude ?? "";
-        acc[`button-longitude-${cardIndex}-${i}`] = button.longitude ?? "";
-        acc[`button-startDate-${cardIndex}-${i}`] = button.startDate ?? "";
-        acc[`button-endDate-${cardIndex}-${i}`] = button.endDate ?? "";
-        acc[`button-description-${cardIndex}-${i}`] = button.description ?? "";
+        // acc[`button-button-copy-code-${i}`] = button.copy;
         return acc;
       }, {});
       form.resetFields();
@@ -891,10 +887,9 @@ function RichCardCarouselSidebar({ selectedNode }) {
                       icon={
                         <>
                           {btn?.type === "quick" && <MessageOutlined />}
-                          {btn?.type === "call" && <PhoneOutlined />}
+                          {/* {btn?.type === "call" && <PhoneOutlined />} */}
                           {btn?.type === "url" && <LinkOutlined />}
-                          {btn?.type === "location" && <EnvironmentOutlined />}
-                          {btn?.type === "calendar" && <CalendarOutlined />}
+                          {/* {btn?.type === "copy-code" && <CopyOutlined />} */}
                         </>
                       }
                     >
@@ -937,12 +932,9 @@ function RichCardCarouselSidebar({ selectedNode }) {
                         icon={
                           <>
                             {btn?.type === "quick" && <MessageOutlined />}
-                            {btn?.type === "call" && <PhoneOutlined />}
+                            {/* {btn?.type === "call" && <PhoneOutlined />} */}
                             {btn?.type === "url" && <LinkOutlined />}
-                            {btn?.type === "location" && (
-                              <EnvironmentOutlined />
-                            )}
-                            {btn?.type === "calendar" && <CalendarOutlined />}
+                            {/* {btn?.type === "copy-code" && <CopyOutlined />} */}
                           </>
                         }
                       >
@@ -972,11 +964,26 @@ function RichCardCarouselSidebar({ selectedNode }) {
                           }
                           style={{ width: "100%", textAlign: "left" }}
                           options={[
-                            { value: "quick", label: "Quick Reply" },
-                            { value: "call", label: "Call Button" },
-                            { value: "url", label: "URL Button" },
-                            { value: "location", label: "Location" },
-                            { value: "calendar", label: "Calendar" },
+                            {
+                              value: "quick",
+                              label: "Quick Reply",
+                              disabled: quickReplyCount >= 2, 
+                            },
+                            // {
+                            //   value: "call",
+                            //   label: "Call Button",
+                            //   disabled: quickReplyCount1 >= 1, 
+                            // },
+                            {
+                              value: "url",
+                              label: "URL Button",
+                              disabled: quickReplyCount2 >= 2, 
+                            },
+                            // {
+                            //   value: "copy-code",
+                            //   label: "Copy Code",
+                            //   disabled: quickReplyCount3 >= 1, 
+                            // },
                           ]}
                         />
                       </Form.Item>
@@ -1010,7 +1017,7 @@ function RichCardCarouselSidebar({ selectedNode }) {
                         />
                       </Form.Item>
                     </Col>
-                    {btn.type === "call" && (
+                    {/* {btn.type === "call" && (
                       <Col md={24}>
                         <Form.Item
                           name={`button-phoneNumber-${cardIndex}-${index}`}
@@ -1058,7 +1065,7 @@ function RichCardCarouselSidebar({ selectedNode }) {
                           />
                         </Form.Item>
                       </Col>
-                    )}
+                    )} */}
                     {btn.type === "url" && (
                       <Col md={24}>
                         <Form.Item

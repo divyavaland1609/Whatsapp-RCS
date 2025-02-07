@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import React, { useEffect, useRef, useState } from "react";
+import React, { act, useEffect, useRef, useState } from "react";
 import {
   Input,
   Button,
@@ -118,7 +118,7 @@ const ButtonNodeSidebar = ({ selectedNode }) => {
         acc[`button-phoneNumber-${i}`] = button.phoneNumber;
         acc[`button-url-${i}`] = button.url;
         acc[`button-label-${i}`] = button.label;
-
+        acc[`button-copy-${i}`] = button.copy;
         acc[`button-button-copy-code-${i}`] = button.copy;
 
         // acc[`button-label-${i}`] = button.label;
@@ -180,15 +180,16 @@ const ButtonNodeSidebar = ({ selectedNode }) => {
       acc[`button-url-${i}`] = button.url;
       acc[`button-label-${i}`] = button.label;
       acc[`button-button-copy-code-${i}`] = button.copy;
+      acc[`button-copy-code-${i}`] = button.copy;
+
       return acc;
     }, {});
     form.resetFields();
     form.setFieldsValue(initValues);
   };
 
-
   const addNewCard = () => {
-    if (data.actions.length < 3) {
+    if (data.actions.length < 7) {
       setData((prev) => {
         const newActions = [
           ...prev.actions,
@@ -200,11 +201,13 @@ const ButtonNodeSidebar = ({ selectedNode }) => {
           },
         ];
         updateFormFields(newActions);
-        dispatch(setUpdateNodeData({ selectedNode, value: newActions, key: "actions" }));
+        dispatch(
+          setUpdateNodeData({ selectedNode, value: newActions, key: "actions" })
+        );
         return { ...prev, actions: newActions };
       });
     } else {
-      message.warning("Cannot add more than 3 buttons");
+      message.warning("Cannot add more than 7 buttons");
     }
   };
 
@@ -213,18 +216,28 @@ const ButtonNodeSidebar = ({ selectedNode }) => {
       setData((prev) => {
         const newActions = prev.actions.filter((_, i) => i !== index);
         updateFormFields(newActions);
-        dispatch(setUpdateNodeData({ selectedNode, value: newActions, key: "actions" }));
+        dispatch(
+          setUpdateNodeData({ selectedNode, value: newActions, key: "actions" })
+        );
         return { ...prev, actions: newActions };
       });
     } else {
       message.warning("Buttons must be greater than 1");
     }
   };
-  
-const quickReplyCount = data.actions.filter(btn => btn.type === "quick").length;
-const quickReplyCount1 = data.actions.filter(btn => btn.type === "call").length;
-const quickReplyCount2 = data.actions.filter(btn => btn.type === "url").length;
-const quickReplyCount3 = data.actions.filter(btn => btn.type === "copy-code").length;
+
+  const quickReplyCount = data.actions.filter(
+    (btn) => btn.type === "quick"
+  ).length;
+  const quickReplyCount1 = data.actions.filter(
+    (btn) => btn.type === "call"
+  ).length;
+  const quickReplyCount2 = data.actions.filter(
+    (btn) => btn.type === "url"
+  ).length;
+  const quickReplyCount3 = data.actions.filter(
+    (btn) => btn.type === "copy-code"
+  ).length;
 
   // const addNewCard = () => {
   //   if (data.actions.length < 11) {
@@ -484,10 +497,26 @@ const quickReplyCount3 = data.actions.filter(btn => btn.type === "copy-code").le
                           }
                           style={{ width: "100%", textAlign: "left" }}
                           options={[
-                            { value: "quick", label: "Quick Reply", disabled: quickReplyCount >= 3 },
-                            { value: "call", label: "Call Button", disabled: quickReplyCount1 >= 1 },
-                            { value: "url", label: "URL Button", disabled: quickReplyCount2 >= 1 },
-                            { value: "copy-code", label: "Copy Code", disabled: quickReplyCount3 >= 1 },
+                            {
+                              value: "quick",
+                              label: "Quick Reply",
+                              disabled: quickReplyCount >= 3,
+                            },
+                            {
+                              value: "call",
+                              label: "Call Button",
+                              disabled: quickReplyCount1 >= 1,
+                            },
+                            {
+                              value: "url",
+                              label: "URL Button",
+                              disabled: quickReplyCount2 >= 3,
+                            },
+                            {
+                              value: "copy-code",
+                              label: "Copy Code",
+                              disabled: quickReplyCount3 >= 1,
+                            },
                           ]}
                         />
                       </Form.Item>
@@ -513,6 +542,7 @@ const quickReplyCount3 = data.actions.filter(btn => btn.type === "copy-code").le
                           size="small"
                           style={{ fontSize: "15px" }}
                           value={action.title}
+                          disabled={action?.type === "copy-code"}
                           onChange={(e) =>
                             handleChange(index, "title", e.target.value)
                           }
@@ -568,9 +598,9 @@ const quickReplyCount3 = data.actions.filter(btn => btn.type === "copy-code").le
                         </Form.Item>
                       </Col>
                     )}
-                    {/* {action.type === "copy-code" && (
+                    {action.type === "copy-code" && (
                       <Col md={24}>
-                        <Form.Item
+                        {/* <Form.Item
                           name={`button-copy-code-${index}`}
                           // label="URL"
                           initialValue={action.payload}
@@ -584,9 +614,31 @@ const quickReplyCount3 = data.actions.filter(btn => btn.type === "copy-code").le
                               message: "Enter a valid Copy Code",
                             },
                           ]}
-                        ></Form.Item>
+                        ></Form.Item> */}
+                        <Form.Item
+                          name={`button-copy-${index}`}
+                          label="Coupon Copy Code"
+                          rules={[
+                            {
+                              required: true,
+                              message: "Please enter a copy code",
+                            },
+                          ]}
+                        >
+                          <Input
+                            size="small"
+                            style={{ fontSize: "15px" }}
+                            value={action.copy}
+                            onChange={(e) =>
+                              handleChange(index, "copy", e.target.value)
+                            }
+                            placeholder="Enter Coupon Code to Copy"
+                            maxLength={15}
+                          />
+                        </Form.Item>
                       </Col>
-                    )} */}
+                    )}
+                         {action.type === "copy-code" && <></>}
                   </Row>
                 </Form>
               )}
