@@ -13,7 +13,7 @@ import {
   MoreOutlined,
   PhoneOutlined,
 } from "@ant-design/icons";
-import { Handle, Position } from "@xyflow/react";
+import { Handle, Position, useReactFlow } from "@xyflow/react";
 import {
   Badge,
   Button,
@@ -57,6 +57,29 @@ function RichcardNode({ data, selected }) {
   const [isRightHandleConnected, setIsRightHandleConnected] = useState(false);
 
   const { Title, Paragraph, Text, Link } = Typography;
+
+  const reactFlowInstance = useReactFlow();
+
+  useEffect(() => {
+    const buttonActions = alldata?.data?.actions || [];
+    const handleId = new Set(
+      buttonActions
+        .map((action, index) =>
+          action.type === "quick" ? `handle-${index}` : null
+        )
+        .filter(Boolean)
+    );
+
+    reactFlowInstance.setEdges((prevEdges) =>
+      prevEdges.filter((edge) => {
+        return (
+          edge.source !== id ||
+          !edge.sourceHandle ||
+          handleId.has(edge.sourceHandle)
+        );
+      })
+    );
+  }, [alldata?.data?.actions, reactFlowInstance, id]);
 
   useEffect(() => {
     const connectedToStart = checkParentNodesForStart(id);
@@ -438,21 +461,93 @@ function RichcardNode({ data, selected }) {
           </div>
 
           <div className="card-body">
-            <Image
-              style={{
-                height: cardStyle.imageWidth,
-                marginTop: "3px",
-                borderRadius: "14px",
-                objectFit: "cover",
-                width: "200px",
-              }}
-              src={
-                alldata?.data?.mediaUrl ||
-                "https://medcities.org/wp-content/uploads/2021/05/generic_image_medcities-1.jpg"
-              }
-              alt="Media not found"
-              preview={false}
-            />
+            {alldata?.data?.mediaUrl ? (
+              (() => {
+                const mediaUrl = alldata?.data?.mediaUrl?.url;
+                const fileType = alldata?.data?.mediaUrl?.type;
+                console.log("media-->", alldata?.data);
+
+                if (fileType?.includes("image")) {
+                  return (
+                    <Image
+                      style={{
+                        height: cardStyle.imageWidth,
+                        marginTop: "3px",
+                        borderRadius: "14px",
+                        objectFit: "cover",
+                        width: "200px",
+                      }}
+                      src={mediaUrl}
+                      alt="Media not found"
+                      preview={false}
+                    />
+                  );
+                }
+                if (fileType === "video/mp4") {
+                  return (
+                    <video
+                      src={mediaUrl}
+                      controls
+                      style={{
+                        height: cardStyle.imageWidth,
+                        marginTop: "3px",
+                        borderRadius: "14px",
+                        objectFit: "cover",
+                        width: "200px",
+                      }}
+                    />
+                  );
+                }
+                if (fileType === "application/pdf") {
+                  return (
+                    <div>
+                      <iframe
+                        src={mediaUrl}
+                        title="PDF Preview"
+                        style={{
+                          height: cardStyle.imageWidth,
+                          marginTop: "3px",
+                          borderRadius: "14px",
+                          objectFit: "cover",
+                          width: "200px",
+                          border: "none",
+                        }}
+                      />
+                      {/* <a
+                        href={mediaUrl}
+                        download="Document.pdf"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          display: "block",
+                          marginTop: 5,
+                          textDecoration: "underline",
+                          color: "#1890ff",
+                        }}
+                      >
+                        Download PDF
+                      </a> */}
+                    </div>
+                  );
+                }
+                return null;
+              })()
+            ) : (
+              <Image
+                style={{
+                  height: cardStyle.imageWidth,
+                  marginTop: "3px",
+                  borderRadius: "14px",
+                  objectFit: "cover",
+                  width: "200px",
+                }}
+                src={
+                  "https://medcities.org/wp-content/uploads/2021/05/generic_image_medcities-1.jpg"
+                }
+                alt="Media not found"
+                preview={false}
+              />
+            )}
 
             {alldata?.data?.isStartNode ? null : (
               <>

@@ -368,6 +368,7 @@ function MediaNode({ data, selected }) {
                 </Dropdown>
               </Flex>
             </Flex>
+            
           </div>
 
           <div className="card-body" style={{ width: 200 }}>
